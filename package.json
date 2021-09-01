@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "deploy": "ng build --prod --base-href './' && rsync -av --delete dist/ezy-editor/ rois20@ssh.student.bth.se:www/editor"
   },
   "private": true,
   "dependencies": {
@@ -23,6 +24,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@tinymce/tinymce-angular": "^4.2.4",
     "rxjs": "~6.6.0",
+    "tinymce": "^5.9.1",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
   },
