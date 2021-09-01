@@ -7,4 +7,11 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'ezy-editor';
+  editorContent:any = "";
+
+  saveDocument(arg:string) {
+    if (arg === "save") {
+      console.log(this.editorContent);
+    }
+  }
 }

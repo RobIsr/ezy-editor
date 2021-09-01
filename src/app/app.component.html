@@ -1,5 +1,8 @@
+<app-toolbar (saveEvent)="saveDocument($event)"></app-toolbar>
 <editor
-   [init]="{
+outputFormat="text"
+  [(ngModel)]="editorContent"
+  [init]="{
      height: 500,
      menubar: false,
      plugins: [
@@ -11,5 +14,5 @@
        'undo redo | formatselect | bold italic backcolor | \
        alignleft aligncenter alignright alignjustify | \
        bullist numlist outdent indent | removeformat | help'
-   }"
+    }"
  ></editor>
