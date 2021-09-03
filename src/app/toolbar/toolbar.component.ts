@@ -12,7 +12,6 @@ export class ToolbarComponent {
   faSave = faSave;
 
   onSave() {
-    console.log("Saving...");
     this.saveEvent.emit("save");
   }
 }
