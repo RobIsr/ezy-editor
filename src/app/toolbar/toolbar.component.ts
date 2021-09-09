@@ -11,6 +11,8 @@ export class ToolbarComponent {
   @Output() saveEvent = new EventEmitter<string>();
   faSave = faSave;
 
+  constructor() {}
+
   onSave() {
     this.saveEvent.emit("save");
   }

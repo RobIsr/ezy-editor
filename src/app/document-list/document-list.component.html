@@ -1,0 +1,7 @@
+<div class="doc-list-container"  *ngIf="docs">
+    <div class="doc-list-header">
+        <h2>Documents</h2>
+    </div>
+    <div class="doc-list" *ngFor='let document of docs.data'> <div class="doc-list-item">{{document.name}}</div> </div>
+  
+</div>
