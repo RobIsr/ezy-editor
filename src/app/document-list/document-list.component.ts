@@ -10,12 +10,16 @@ import { Doc } from '../models/doc';
 })
 export class DocumentListComponent implements OnInit {
 
-  docs:any = []
+  docs:any = [] // Array containing all documents.
 
   constructor(private documentService: DocumentService) {}
 
   ngOnInit(): void {
+    // Load all documents from database using the DocumentService.
     this.getAllDocs();
+
+    // Subscribe to th observable to refresh list
+    // when post request is completed.
     this.documentService.notifyObservable$.subscribe(res => {
       if(res.refreshDocs){
           console.log("refreshing");
@@ -24,10 +28,22 @@ export class DocumentListComponent implements OnInit {
     });
   }
 
+  /**
+   * Get all documents by sybscribing to the DocumentService.
+   */
   getAllDocs() {
     this.documentService.getAllDocuments().subscribe((res) => {
       this.docs = res;
       console.log("Docs: ", this.docs);
     });
+  }
+
+  /**
+   * Sends clicked items html to be loaded in the editor.
+   * 
+   * @param id The id of clicked document.
+   */
+  onDocumentClick(id:string) {
+    console.log(id);
   }
 }

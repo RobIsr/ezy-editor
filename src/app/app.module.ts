@@ -8,13 +8,18 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { DocumentListComponent } from './document-list/document-list.component';
+import {MatDialogModule} from "@angular/material/dialog";
+import {  MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SaveDialogComponent } from './save-dialog/save-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ToolbarComponent,
     DocumentListComponent,
-    
+    SaveDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -22,12 +27,17 @@ import { DocumentListComponent } from './document-list/document-list.component';
     FormsModule,
     EditorModule,
     FontAwesomeModule,
+    MatDialogModule,
+    BrowserAnimationsModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   providers: [
     { 
       provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js',
     },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [SaveDialogComponent]
 })
 export class AppModule { }

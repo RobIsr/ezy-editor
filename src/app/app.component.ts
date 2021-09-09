@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { DocumentListComponent } from './document-list/document-list.component';
 import { DocumentService } from './document.service';
 import { Doc } from './models/doc';
 
@@ -10,17 +9,18 @@ import { Doc } from './models/doc';
 })
 export class AppComponent {
   title = 'ezy-editor';
-  editorContent:any = "";
+  editorContent:string = "";
+  fileName:string = "";
 
-  constructor(private docService: DocumentService){}
+  constructor(
+    private docService: DocumentService,
+  ){}
 
   saveDocument(arg:string) {
-    if (arg === "save") {
       const document:Doc = {
-        name: "New document",
+        name: arg,
         html: this.editorContent
       }
       this.docService.saveDocument(document);
-    }
   }
 }
