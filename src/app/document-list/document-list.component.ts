@@ -1,7 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { DocumentService } from '../document.service';
-import { MessageService } from '../message.service';
-import { Doc } from '../models/doc';
 
 @Component({
   selector: 'app-document-list',
@@ -10,7 +8,11 @@ import { Doc } from '../models/doc';
 })
 export class DocumentListComponent implements OnInit {
 
+  @Output() loadEvent = new EventEmitter<string>();
   docs:any = [] // Array containing all documents.
+  currentId:string = "";
+  selectedDocument:string = "";
+  loading:boolean = false;
 
   constructor(private documentService: DocumentService) {}
 
@@ -21,9 +23,19 @@ export class DocumentListComponent implements OnInit {
     // Subscribe to th observable to refresh list
     // when post request is completed.
     this.documentService.notifyObservable$.subscribe(res => {
+      
       if(res.refreshDocs){
-          console.log("refreshing");
           this.getAllDocs();
+      }
+      if (res.loading) {
+        this.loading = true;
+      } 
+      if (!res.loading) {
+        this.loading = false;
+      } 
+      if (res.new) {
+        //Clear selection on list when a new document is created.
+        this.selectedDocument = "";
       }
     });
   }
@@ -34,7 +46,6 @@ export class DocumentListComponent implements OnInit {
   getAllDocs() {
     this.documentService.getAllDocuments().subscribe((res) => {
       this.docs = res;
-      console.log("Docs: ", this.docs);
     });
   }
 
@@ -45,5 +56,7 @@ export class DocumentListComponent implements OnInit {
    */
   onDocumentClick(id:string) {
     console.log(id);
+    this.loadEvent.emit(id);
+    this.selectedDocument = id;
   }
 }

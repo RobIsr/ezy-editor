@@ -1,36 +1,36 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { faSave } from '@fortawesome/free-solid-svg-icons/faSave';
-import { SaveDialogComponent } from '../save-dialog/save-dialog.component';
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
+import { DocumentService } from '../document.service';
 
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss']
 })
-export class ToolbarComponent {
-
-  @Output() saveEvent = new EventEmitter<string>();
+export class ToolbarComponent implements OnInit {
+  UNSAVED_MESSAGE = "(Unsaved document...)";
+  @Output() saveEvent = new EventEmitter();
+  @Output() newEvent = new EventEmitter();
   faSave = faSave;
+  faPlus = faPlus;
+  fileName:string = this.UNSAVED_MESSAGE; //To be displayed in toolbar when document is open.
 
-  constructor(private saveDialog: MatDialog) {}
-
-  openSaveDialog() {
-    const dialogConfig = new MatDialogConfig();
-
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-
-    const dialogRef = this.saveDialog.open(SaveDialogComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.saveEvent.emit(dialogRef.componentInstance.fileName);
+  constructor(private documentService: DocumentService) {}
+  ngOnInit(): void {
+    this.documentService.notifyObservable$.subscribe(res => {
+      if(res.toolbarName){
+          this.fileName = res.toolbarName;
       }
     });
   }
 
   onSave() {
-    this.openSaveDialog();
+    this.saveEvent.emit();
+  }
+
+  onNew() {
+    this.fileName = this.UNSAVED_MESSAGE;
+    this.newEvent.emit();
   }
 }

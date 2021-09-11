@@ -1,6 +1,13 @@
 <div class="toolbar">
-    <span class="icon" (click)="onSave()">
+    <span class="icon save" (click)="onSave()">
         <fa-icon [icon]="faSave">
         </fa-icon>
     </span>
+    <span class="icon new" (click)="onNew()">
+        <fa-icon [icon]="faPlus">
+        </fa-icon>
+    </span>
+    <div class="toolbar-filename">
+        <p>{{ fileName }}</p>
+    </div>
 </div>

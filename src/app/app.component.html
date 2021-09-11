@@ -1,7 +1,12 @@
 <div class="app-container">
-  <app-document-list></app-document-list>
+  <app-document-list
+    (loadEvent)="loadToEditor($event)">
+  </app-document-list>
   <div class="editor">
-    <app-toolbar (saveEvent)="saveDocument($event)"></app-toolbar>
+    <app-toolbar 
+      (saveEvent)="openSaveDialog()"
+      (newEvent)="newDocument()"
+      ></app-toolbar>
     <editor
     outputFormat="html"
       [(ngModel)]="editorContent"

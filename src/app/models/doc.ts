@@ -1,5 +1,5 @@
 export interface Doc {
-    id?: string,
+    _id: string,
     name: string,
     html: string
 }

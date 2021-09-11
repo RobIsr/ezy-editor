@@ -2,6 +2,13 @@
     <div class="doc-list-header">
         <h2>Documents</h2>
     </div>
-    <div class="doc-list" *ngFor='let document of docs.data'> <div class="doc-list-item" (click)="onDocumentClick(document._id)">{{document.name}}</div> </div>
+    <div class="spinner-container" *ngIf="loading; else elseBlock"><mat-spinner [diameter]="50"></mat-spinner><p>Loading...</p></div>
+    <ng-template #elseBlock>
+        <div class="doc-list" *ngFor='let document of docs.data'>
+            <div (click)="onDocumentClick(document._id)" [ngClass]="selectedDocument === document._id ? 'doc-list-item marked' : 'doc-list-item'">
+                {{document.name}}
+            </div>
+        </div>
+    </ng-template>
   
 </div>
