@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "scripts": {
     "ng": "ng",
-    "cy:run": "cypress run",
+    "cy:run": "ng serve & cypress run",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
