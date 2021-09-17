@@ -1,5 +1,5 @@
-<div class="app-container">
-  <app-document-list
+<div class="app-container" (confirmSaveEvent)="saveDocument($event)">
+  <app-document-list class="app-document-list"
     (loadEvent)="loadToEditor($event)">
   </app-document-list>
   <div class="editor">

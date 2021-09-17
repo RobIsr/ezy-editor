@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { SaveDialogComponent } from './save-dialog/save-dialog.component';
 import { DocumentService } from './document.service';
@@ -16,13 +16,15 @@ export class AppComponent implements OnInit {
   currentId:string = "";
   currentDoc:Doc | undefined;
   @Output() newMainEvent = new EventEmitter();
+  dialogRef= "";
 
   constructor(
     private docService: DocumentService,
-    private saveDialog: MatDialog
+    public saveDialog: MatDialog,
   ){}
 
   ngOnInit(): void {
+    this.docService.getAllDocuments();
     // Subscribe to the observable to cache loaded documents
     // when a new get request has completed in the service.
     this.docService.notifyObservable$.subscribe(res => {
@@ -33,16 +35,18 @@ export class AppComponent implements OnInit {
   }
 
   saveDocument(fileName:any) {
+    console.log("From save: ");
     const document:Doc = {
       _id: "",
       name: fileName,
       html: this.editorContent
     }
-    console.log("From save: ", fileName);
+    
     //Check to see if document needs to inserted or updated.
     if (this.currentId != "") { // If currentId is set it means that document already exists.
       this.docService.updateOneDocument(document, this.currentId);
     } else {
+      console.log("Calling save in service");
       this.docService.saveDocument(document);
     }
   }
@@ -75,14 +79,16 @@ export class AppComponent implements OnInit {
 
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
+    dialogConfig.id = "save-dialog";
     dialogConfig.data = {
       fileName: this.currentDoc?.name
     }
-
+    console.log("Opening Dialog!")
     const dialogRef = this.saveDialog.open(SaveDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        console.log("Result", result);
         this.saveDocument(dialogRef.componentInstance.fileName);
       }
     });

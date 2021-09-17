@@ -19,7 +19,7 @@ export class ToolbarComponent implements OnInit {
   constructor(private documentService: DocumentService) {}
   ngOnInit(): void {
     this.documentService.notifyObservable$.subscribe(res => {
-      if(res.toolbarName){
+      if(res.toolbarName) {
           this.fileName = res.toolbarName;
       }
     });
