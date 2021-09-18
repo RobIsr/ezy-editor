@@ -1,3 +1,5 @@
+[![Build Status](https://app.travis-ci.com/RobIsr/ezy-editor.svg?branch=main)](https://app.travis-ci.com/RobIsr/ezy-editor)
+
 # EzyEditor
 
 EzyEditor is a simple text editor designed for ease of use. At the moment it only contains the editor and a toolbar with a save button. When it is pressed the editor content is logged to the console. The project is a part of the course Jsramverk at Blekinge Tekniska Högskola.
