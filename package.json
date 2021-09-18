@@ -1,6 +1,6 @@
 {
   "name": "ezy-editor",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "scripts": {
     "ng": "ng",
     "ci:start": "npm install wait-on & ng serve & wait-on http://localhost:4200",
