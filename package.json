@@ -27,6 +27,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@tinymce/tinymce-angular": "^4.2.4",
+    "ngx-socket-io": "^4.1.0",
     "rxjs": "~6.6.0",
     "tinymce": "^5.9.1",
     "tslib": "^2.3.0",
