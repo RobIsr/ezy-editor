@@ -3,6 +3,10 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { SaveDialogComponent } from './save-dialog/save-dialog.component';
 import { DocumentService } from './document.service';
 import { Doc } from './models/doc';
+import { SocketService } from './socket.service';
+import { Socket } from 'ngx-socket-io';
+import tinymce, { TinyMCE } from 'dist/ezy-editor/tinymce/tinymce';
+import { DEFAULT_INTERPOLATION_CONFIG } from '@angular/compiler';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +24,9 @@ export class AppComponent implements OnInit {
 
   constructor(
     private docService: DocumentService,
+    private socketService: SocketService,
     public saveDialog: MatDialog,
+    private socket: Socket,
   ){}
 
   ngOnInit(): void {
@@ -29,9 +35,47 @@ export class AppComponent implements OnInit {
     // when a new get request has completed in the service.
     this.docService.notifyObservable$.subscribe(res => {
       if(res.allDocs){
+          this.docs = [];
           this.docs = res.allDocs.data;
       }
     });
+
+    // Listen to socket.
+    this.socket.on("message", (message:any) => {
+      this.editorContent = message;
+      // Set the editor content to that recieved from socket.
+      tinymce.activeEditor.setContent(this.editorContent);
+      // Set position of marker to end of content
+      tinymce.activeEditor.focus();
+      tinymce.activeEditor.selection.select(tinymce.activeEditor.getBody(), true);
+      tinymce.activeEditor.selection.collapse(false);
+    });
+  }
+
+  ngAfterViewInit() {
+    tinymce.init(
+      {
+          selector: "#editor",
+          base_url: './tinymce',
+          setup: (editor) => {
+            editor.on('KeyUp', (event) => {
+              this.editorContent = editor.getBody().innerHTML;
+              this.updateSocket(editor.getBody().innerHTML);
+            });
+          },
+          suffix: '.min',
+          height: 500,
+          menubar: false,
+          plugins: [
+            'advlist autolink lists link image charmap print preview anchor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media table paste code help wordcount'
+          ],
+          toolbar:
+            'undo redo | formatselect | bold italic backcolor | \
+            alignleft aligncenter alignright alignjustify | \
+            bullist numlist outdent indent | removeformat | help'
+      });
   }
 
   saveDocument(fileName:any) {
@@ -58,11 +102,13 @@ export class AppComponent implements OnInit {
 
     this.currentId = id; //Store id for the document currently opened.
     if (document) {
+      tinymce.activeEditor.setContent(document.html);
       this.editorContent = document.html;
       this.docService.notifyOther({
         toolbarName: document.name
       });
     }
+    this.socketService.createRoom(this.currentId);
   }
 
   newDocument() {
@@ -92,5 +138,11 @@ export class AppComponent implements OnInit {
         this.saveDocument(dialogRef.componentInstance.fileName);
       }
     });
+  }
+
+  updateSocket(editorContent:any) {
+    console.log(editorContent);
+    var doc = this.currentDoc as Doc
+    this.socketService.sendMessage(this.currentId, doc.name, editorContent);
   }
 }

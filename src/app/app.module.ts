@@ -6,7 +6,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HttpClientModule } from '@angular/common/http';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 
-const config: SocketIoConfig = { url: 'http://127.0.0.1:1337', options: {} };
+const config: SocketIoConfig = { url: 'http://localhost:1337', options: {} };
 
 import { AppComponent } from './app.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
@@ -18,6 +18,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SaveDialogComponent } from './save-dialog/save-dialog.component';
+import { SocketService } from './socket.service';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -38,12 +40,13 @@ import { SaveDialogComponent } from './save-dialog/save-dialog.component';
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
   ],
   providers: [
     { 
       provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js',
     },
+    SocketService
   ],
   bootstrap: [AppComponent],
   entryComponents: [SaveDialogComponent]
