@@ -8,17 +8,10 @@
         </fa-icon>
     </span>
 
-    <div id="saved" *ngIf="saved; else elseBlock">
-        <span id="saved"></span>
-        <span id="saved-text">Document saved.</span>
+    <div id="not-saved-wrapper" *ngIf="typing">
+        <span id="not-saved"></span>
+        <span>Someone is typing...</span>
     </div>
-
-    <ng-template #elseBlock>
-        <div id="not-saved">
-            <span id="not-saved"></span>
-            <span>Someone is typing...</span>
-        </div>
-    </ng-template>
     
     <div class="toolbar-filename">
         <p>{{ fileName }}</p>

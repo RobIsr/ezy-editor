@@ -48,9 +48,16 @@
 #not-saved {
     height: 15px;
     width: 15px;
+    margin-right: 15px;
     background-color: #e93903;
     border-radius: 50%;
     display: inline-block;
+}
+
+#not-saved-wrapper {
+    position: absolute;
+    top: 18px;
+    left: 100px;
 }
 
 @media screen and (max-width: 800px) {

@@ -17,11 +17,10 @@ export class ToolbarComponent implements OnInit {
   faSave = faSave;
   faPlus = faPlus;
   fileName:string = this.UNSAVED_MESSAGE; //To be displayed in toolbar when document is open.
-  saved = true;
+  typing = false;
 
   constructor(
     private documentService: DocumentService,
-    private socketService: SocketService,
     private socket: Socket,
     ) {}
   ngOnInit(): void {
@@ -29,12 +28,11 @@ export class ToolbarComponent implements OnInit {
       if(res.toolbarName) {
           this.fileName = res.toolbarName;
       }
-
-      // Listen to socket.
-    this.socket.on("save", (save:boolean) => {
-      console.log(save);
-      this.saved = save;
     });
+
+    // Listen to socket.
+    this.socket.on("save", (save:boolean) => {
+      this.typing = save;
     });
   }
 
