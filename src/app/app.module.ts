@@ -6,7 +6,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HttpClientModule } from '@angular/common/http';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 
-const config: SocketIoConfig = { url: 'http://localhost:1337', options: {} };
+const config: SocketIoConfig = { url: 'https://jsramverk-editor-rois20.azurewebsites.net', options: {} };
 
 import { AppComponent } from './app.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
@@ -19,7 +19,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SaveDialogComponent } from './save-dialog/save-dialog.component';
 import { SocketService } from './socket.service';
-import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [

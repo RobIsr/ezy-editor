@@ -5,8 +5,7 @@ import { DocumentService } from './document.service';
 import { Doc } from './models/doc';
 import { SocketService } from './socket.service';
 import { Socket } from 'ngx-socket-io';
-import tinymce, { TinyMCE } from 'dist/ezy-editor/tinymce/tinymce';
-import { DEFAULT_INTERPOLATION_CONFIG } from '@angular/compiler';
+import tinymce from 'tinymce';
 
 @Component({
   selector: 'app-root',
@@ -57,8 +56,8 @@ export class AppComponent implements OnInit {
       {
           selector: "#editor",
           base_url: './tinymce',
-          setup: (editor) => {
-            editor.on('KeyUp', (event) => {
+          setup: (editor:any) => {
+            editor.on('KeyUp', () => {
               this.editorContent = editor.getBody().innerHTML;
               this.updateSocket(editor.getBody().innerHTML);
             });
@@ -114,6 +113,7 @@ export class AppComponent implements OnInit {
   newDocument() {
     this.currentId = "";
     this.editorContent = "";
+    tinymce.activeEditor.setContent("");
     this.currentDoc = undefined;
     this.docService.notifyOther({
       new: true
