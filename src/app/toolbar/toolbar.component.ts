@@ -3,6 +3,7 @@ import { faSave } from '@fortawesome/free-solid-svg-icons/faSave';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { DocumentService } from '../document.service';
 import { SocketService } from '../socket.service';
+import { Socket } from 'ngx-socket-io';
 
 @Component({
   selector: 'app-toolbar',
@@ -16,16 +17,24 @@ export class ToolbarComponent implements OnInit {
   faSave = faSave;
   faPlus = faPlus;
   fileName:string = this.UNSAVED_MESSAGE; //To be displayed in toolbar when document is open.
+  saved = true;
 
   constructor(
     private documentService: DocumentService,
     private socketService: SocketService,
+    private socket: Socket,
     ) {}
   ngOnInit(): void {
     this.documentService.notifyObservable$.subscribe(res => {
       if(res.toolbarName) {
           this.fileName = res.toolbarName;
       }
+
+      // Listen to socket.
+    this.socket.on("save", (save:boolean) => {
+      console.log(save);
+      this.saved = save;
+    });
     });
   }
 

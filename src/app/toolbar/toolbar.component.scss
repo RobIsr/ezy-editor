@@ -37,6 +37,22 @@
     font-size: 40px;
 }
 
+#saved {
+    height: 15px;
+    width: 15px;
+    background-color: #14ac14;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+#not-saved {
+    height: 15px;
+    width: 15px;
+    background-color: #e93903;
+    border-radius: 50%;
+    display: inline-block;
+}
+
 @media screen and (max-width: 800px) {
     .icon:hover {
         font-size: 30px;
