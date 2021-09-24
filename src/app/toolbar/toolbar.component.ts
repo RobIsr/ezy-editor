@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { faSave } from '@fortawesome/free-solid-svg-icons/faSave';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { DocumentService } from '../document.service';
+import { SocketService } from '../socket.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -16,7 +17,10 @@ export class ToolbarComponent implements OnInit {
   faPlus = faPlus;
   fileName:string = this.UNSAVED_MESSAGE; //To be displayed in toolbar when document is open.
 
-  constructor(private documentService: DocumentService) {}
+  constructor(
+    private documentService: DocumentService,
+    private socketService: SocketService,
+    ) {}
   ngOnInit(): void {
     this.documentService.notifyObservable$.subscribe(res => {
       if(res.toolbarName) {
