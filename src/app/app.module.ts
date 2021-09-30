@@ -9,15 +9,15 @@ import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 const config: SocketIoConfig = { url: 'https://jsramverk-editor-rois20.azurewebsites.net', options: {} };
 
 import { AppComponent } from './app.component';
-import { ToolbarComponent } from './toolbar/toolbar.component';
-import { DocumentListComponent } from './document-list/document-list.component';
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
+import { DocumentListComponent } from './components/document-list/document-list.component';
 import {MatDialogModule} from "@angular/material/dialog";
 import {  MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { SaveDialogComponent } from './save-dialog/save-dialog.component';
+import { SaveDialogComponent } from './components/save-dialog/save-dialog.component';
 import { SocketService } from './services/socket.service';
 
 @NgModule({

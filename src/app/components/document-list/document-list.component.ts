@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { DocumentService } from '../services/document.service';
+import { DocumentService } from '../../services/document.service';
 
 @Component({
   selector: 'app-document-list',

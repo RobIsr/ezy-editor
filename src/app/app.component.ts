@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { SaveDialogComponent } from './save-dialog/save-dialog.component';
+import { SaveDialogComponent } from './components/save-dialog/save-dialog.component';
 import { DocumentService } from './services/document.service';
 import { Doc } from './models/doc';
 import { SocketService } from './services/socket.service';
