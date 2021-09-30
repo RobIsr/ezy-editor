@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { identity } from 'lodash';
 import { Socket } from 'ngx-socket-io';
 import { map } from 'rxjs/operators';
-import { Doc } from './models/doc';
+import { Doc } from '../models/doc';
 
 @Injectable()
 export class SocketService {

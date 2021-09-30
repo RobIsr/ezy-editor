@@ -1,8 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { faSave } from '@fortawesome/free-solid-svg-icons/faSave';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
-import { DocumentService } from '../document.service';
-import { SocketService } from '../socket.service';
+import { DocumentService } from '../services/document.service';
+import { SocketService } from '../services/socket.service';
 import { Socket } from 'ngx-socket-io';
 
 @Component({

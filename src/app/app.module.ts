@@ -18,7 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SaveDialogComponent } from './save-dialog/save-dialog.component';
-import { SocketService } from './socket.service';
+import { SocketService } from './services/socket.service';
 
 @NgModule({
   declarations: [
