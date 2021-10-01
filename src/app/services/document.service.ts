@@ -21,9 +21,9 @@ export class DocumentService {
 
   constructor(private http: HttpClient) { }
 
-  allDocsUrl = 'https://jsramverk-editor-rois20.azurewebsites.net/allDocs';
-  saveDocUrl = 'https://jsramverk-editor-rois20.azurewebsites.net/save';
-  updateDocUrl = 'https://jsramverk-editor-rois20.azurewebsites.net/update';
+  allDocsUrl = `${environment.apiUrl}/allDocs`;
+  saveDocUrl = `${environment.apiUrl}/save`;
+  updateDocUrl = `${environment.apiUrl}/update`;
 
   getAllDocuments() {
     this.notifyOther({loading: true});
