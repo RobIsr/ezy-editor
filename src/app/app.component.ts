@@ -6,6 +6,8 @@ import { Doc } from './models/doc';
 import { SocketService } from './services/socket.service';
 import { Socket } from 'ngx-socket-io';
 import tinymce from 'tinymce';
+import { AuthService } from './services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +26,7 @@ export class AppComponent implements OnInit {
   constructor(
     private docService: DocumentService,
     private socketService: SocketService,
+    private authService: AuthService,
     public saveDialog: MatDialog,
     private socket: Socket,
   ){}

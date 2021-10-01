@@ -3,8 +3,14 @@
         <fa-icon [icon]="faSave">
         </fa-icon>
     </span>
+
     <span id="new" class="icon new" (click)="onNew()">
         <fa-icon [icon]="faPlus">
+        </fa-icon>
+    </span>
+
+    <span id="logout" class="icon logout" (click)="onLogout()">
+        <fa-icon [icon]="faSignout">
         </fa-icon>
     </span>
 
@@ -12,7 +18,7 @@
         <span id="not-saved"></span>
         <span>Someone is typing...</span>
     </div>
-    
+
     <div class="toolbar-filename">
         <p>{{ fileName }}</p>
     </div>

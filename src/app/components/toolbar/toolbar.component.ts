@@ -1,9 +1,10 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { faSave } from '@fortawesome/free-solid-svg-icons/faSave';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { DocumentService } from '../../services/document.service';
-import { SocketService } from '../../services/socket.service';
 import { Socket } from 'ngx-socket-io';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -16,11 +17,13 @@ export class ToolbarComponent implements OnInit {
   @Output() newEvent = new EventEmitter();
   faSave = faSave;
   faPlus = faPlus;
+  faSignout = faSignOutAlt;
   fileName:string = this.UNSAVED_MESSAGE; //To be displayed in toolbar when document is open.
   typing = false;
 
   constructor(
     private documentService: DocumentService,
+    private authService: AuthService,
     private socket: Socket,
     ) {}
   ngOnInit(): void {
@@ -43,5 +46,9 @@ export class ToolbarComponent implements OnInit {
   onNew() {
     this.fileName = this.UNSAVED_MESSAGE;
     this.newEvent.emit();
+  }
+
+  onLogout() {
+    this.authService.logout();
   }
 }
