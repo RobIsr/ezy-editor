@@ -1,0 +1,46 @@
+.auth-form-wrapper {
+    margin-top: 2em;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.auth-form {
+    border: 1px solid black;
+    padding: 1em;
+
+    fieldset {
+        border: none;
+    }
+
+    legend {
+        font-weight: bold;
+    }
+
+    .form-field {
+        width: 250px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin: 0.5em;
+    }
+    
+    .form-buttons {
+        button {
+            width: 200px;
+            margin-left: 1.5em;
+        }
+    }
+
+    .link {
+        margin-left: 1.5em;
+    }
+
+    .auth-message-error {
+        background-color: red;
+        color: white;
+        padding: 0.5em;
+        border-radius: 10px;
+        margin-top: 0.5em;
+    }
+}

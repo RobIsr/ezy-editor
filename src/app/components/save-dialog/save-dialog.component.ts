@@ -14,7 +14,7 @@ export class SaveDialogComponent {
     this.fileName = data.fileName;
   }
 
-  save(){
+  save() {
     console.log(this.fileName);
   };
 

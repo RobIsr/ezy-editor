@@ -9,7 +9,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "npm run ci:start & npm run cy:run",
-    "deploy": "ng build --prod --base-href './' && rsync -av --delete dist/ezy-editor/ rois20@ssh.student.bth.se:www/editor"
+    "deploy": "ng build --base-href './' && rsync -av --delete dist/ezy-editor/ rois20@ssh.student.bth.se:www/editor"
   },
   "private": true,
   "dependencies": {
@@ -27,6 +27,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@tinymce/tinymce-angular": "^4.2.4",
+    "jwt-decode": "^3.1.2",
     "moment": "^2.29.1",
     "ngx-socket-io": "^4.1.0",
     "rxjs": "~6.6.0",

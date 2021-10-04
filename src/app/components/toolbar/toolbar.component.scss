@@ -3,7 +3,13 @@
     padding: 1em;
     border: 1px solid #cccccc;
     margin-bottom: 0.5em;
-    height: 40px;
+}
+
+.toolbar-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 1em;
 }
 
 .icon {
@@ -27,7 +33,7 @@
 .logout {
     position: absolute;
     top: 18px;
-    left: 105px;
+    right: 15px;
 }
 
 .toolbar-filename {
@@ -41,6 +47,22 @@
 
 .icon:hover {
     font-size: 40px;
+}
+
+.search-list {
+    position: absolute;
+    z-index: 1000;
+    background-color: white;
+    overflow: visible;
+}
+
+.user-list {
+    list-style-type: none;
+}
+
+.user-item:hover {
+    background-color: #63b2d3;
+    cursor: pointer;
 }
 
 #saved {
@@ -64,6 +86,10 @@
     position: absolute;
     top: 18px;
     left: 100px;
+}
+
+#allowed-users {
+    margin-right: 0.5em;
 }
 
 @media screen and (max-width: 800px) {

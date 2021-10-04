@@ -3,8 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import { User } from '../models/user';
-import { map } from 'rxjs/operators';
+import { Token } from '../models/token.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,14 +21,14 @@ export class AuthService {
     }
 
     constructor( private http: HttpClient, private router: Router, ) {
-        this.userSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('JWT_TOKEN') as string));
+        this.userSubject = new BehaviorSubject<Token>(JSON.parse(localStorage.getItem('JWT_TOKEN') as string));
         this.user = this.userSubject.asObservable();
     }
 
     loginUrl = `${environment.apiUrl}/login`;
     registerUrl = `${environment.apiUrl}/register`;
 
-    public get userValue():any {
+    public get userValue():Token {
         return this.userSubject.value;
     }
 
@@ -39,11 +38,9 @@ export class AuthService {
      * @param password Entered password
      */
     register(username:string, password:string) {
-        return this.http.post(this.registerUrl, {
+        return this.http.put(this.registerUrl, {
             "username": username,
             "password": password
-          }).subscribe((res) => {
-              this.notifyOther({register: true});
           });
     }
     
@@ -53,21 +50,12 @@ export class AuthService {
      * @param password Entered password
      */
     login(username:string, password:string) {
-        return this.http.post(`${environment.apiUrl}/login`, { username, password })
-            .subscribe((res) => {
-              this.notifyOther({register: true});
-              localStorage.setItem('JWT_TOKEN', JSON.stringify(res));
-                this.userSubject.next(res);
-                this.router.navigate(['/'])
-                .then(() => {
-                    window.location.reload();
-                });
-            });
+        return this.http.post(`${environment.apiUrl}/login`, { username, password });
     }
 
     logout() {
         localStorage.removeItem('JWT_TOKEN');
-        this.userSubject.next(null as unknown as User);
+        this.userSubject.next(null);
         this.router.navigate(['/login']);
     }
 }

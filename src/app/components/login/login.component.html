@@ -1,19 +1,26 @@
-<form [formGroup]="form">
-    <fieldset>
-        <legend>Login</legend>
-        <div class="form-field">
-            <label>Email:</label>
-            <input name="email" formControlName="email">
+<div class="auth-form-wrapper">
+    <form class="auth-form" [formGroup]="form">
+        <fieldset>
+            <legend>Login</legend>
+            <div class="form-field">
+                <label>Email:</label>
+                <input name="email" formControlName="email">
+            </div>
+            <div class="form-field">
+                <label>Password:</label>
+                <input name="password" formControlName="password" 
+                       type="password">
+            </div>
+        </fieldset>
+        <div class="form-buttons">
+            <button class="button button-primary" 
+                    (click)="login()">Login</button>
         </div>
-        <div class="form-field">
-            <label>Password:</label>
-            <input name="password" formControlName="password" 
-                   type="password">
+        <div class="link">
+            <a routerLink="/register" routerLinkActive="active">Register</a>
         </div>
-    </fieldset>
-    <div class="form-buttons">
-        <button class="button button-primary" 
-                (click)="login()">Login</button>
-    </div>
-    <a routerLink="/register" routerLinkActive="active">Register</a>
-</form>
+        <div class="auth-message-error" *ngIf="error">
+            <p>{{error}}</p>
+        </div>
+    </form>
+</div>

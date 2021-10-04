@@ -10,6 +10,7 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class LoginComponent {
     form:FormGroup;
+    error:string = "";
 
     constructor(
       private fb:FormBuilder, 
@@ -21,17 +22,24 @@ export class LoginComponent {
           email: ['',Validators.required],
           password: ['',Validators.required]
       });
-
-      if(authService.userValue) {
-        router.navigate(['/editor']);
-      }
     }
 
     login() {
         const val = this.form.value;
 
+        this.error = "";
+
         if (val.email && val.password) {
-            this.authService.login(val.email, val.password);
+            this.authService.login(val.email, val.password).subscribe((res) => {
+              localStorage.setItem('JWT_TOKEN', JSON.stringify(res));
+                this.router.navigate(['/'])
+                .then(() => {
+                    window.location.reload();
+                });
+            },
+            (error) => {
+                this.error = error.error.data;
+            });
         }
     }
 }

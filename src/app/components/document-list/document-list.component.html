@@ -4,7 +4,7 @@
     </div>
     <div class="spinner-container" *ngIf="loading; else elseBlock"><mat-spinner [diameter]="50"></mat-spinner><p>Loading...</p></div>
     <ng-template #elseBlock>
-        <div id="doc-list" class="doc-list" *ngFor='let document of docs.data'>
+        <div id="doc-list" class="doc-list" *ngFor='let document of docs'>
             <li (click)="onDocumentClick(document._id)" [ngClass]="selectedDocument === document._id ? 'doc-list-item marked' : 'doc-list-item'">
                 {{document.name}}
             </li>

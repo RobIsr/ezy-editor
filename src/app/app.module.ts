@@ -26,6 +26,7 @@ import { AuthInterceptor } from './auth-interceptor';
 import { AuthGuardService } from './services/auth-guard.service';
 import { LayoutComponent } from './components/layout/layout.component';
 import { environment } from 'src/environments/environment';
+import { SearchPipe } from './services/search.pipe';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { environment } from 'src/environments/environment';
     LoginComponent,
     RegisterComponent,
     LayoutComponent,
+    SearchPipe
   ],
   imports: [
     BrowserModule,

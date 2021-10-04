@@ -22,4 +22,39 @@
     <div class="toolbar-filename">
         <p>{{ fileName }}</p>
     </div>
+
+    <div class="toolbar-actions" *ngIf="currentId">
+        <span>
+            <select
+            name="allowed-users" 
+            id="allowed-users" 
+            #au (change)="onAllowedUserClick(au.value)"
+            style='height: 35px; font-family:FontAwesome; font-style: normal;'>
+                <option value="" selected>Users (Select to remove)</option>
+                <option
+                style="font-weight:900;"
+                *ngFor="let u of allowedUsers"
+                value="{{u}}">
+                {{u}}</option>
+            </select>
+        </span>
+        <span>
+            <input 
+                [(ngModel)]="searchInput"
+                type="text"
+                name="search-user"
+                id="search-user"
+                placeholder="Search for users to add"
+                (input)="onSearchChange()"
+                style='height: 29px;'>
+                <div *ngIf="searching" class="search-list">
+                    <ul class="user-list">
+                        <!-- results of ngFor is passed to appFilter with argument searchText -->
+                        <li class="user-item" *ngFor="let u of allUsers | appFilter: searchInput" (click)="onUserClick(u)">
+                          {{u.username}}
+                        </li>
+                    </ul>
+                </div>
+        </span>
+    </div>
 </div>

@@ -26,7 +26,6 @@ export class AppComponent implements OnInit {
   constructor(
     private docService: DocumentService,
     private socketService: SocketService,
-    private authService: AuthService,
     public saveDialog: MatDialog,
     private socket: Socket,
   ){}
@@ -41,6 +40,11 @@ export class AppComponent implements OnInit {
           this.docs = res.allDocs.data;
       }
     });
+
+    this.docService.documentClickedEvent.subscribe((res) => {
+      this.currentId = res;
+      this.loadToEditor(this.currentId);
+    })
 
     // Listen to socket.
     this.socket.on("message", (message:any) => {
@@ -121,6 +125,7 @@ export class AppComponent implements OnInit {
     this.docService.notifyOther({
       new: true
     });
+    this.docService.documentClicked("");
   }
 
   openSaveDialog() {

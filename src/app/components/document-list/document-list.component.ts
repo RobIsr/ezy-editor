@@ -7,25 +7,26 @@ import { DocumentService } from '../../services/document.service';
   styleUrls: ['./document-list.component.scss'],
 })
 export class DocumentListComponent implements OnInit {
-
-  @Output() loadEvent = new EventEmitter<string>();
   docs:any = [] // Array containing all documents.
-  currentId:string = "";
+  public currentId:string = "";
   selectedDocument:string = "";
   loading:boolean = false;
 
   constructor(private documentService: DocumentService) {}
 
   ngOnInit(): void {
-    // Load all documents from database using the DocumentService.
-    this.getAllDocs();
 
     // Subscribe to th observable to refresh list
     // when post request is completed.
-    this.documentService.notifyObservable$.subscribe(res => {
+    this.documentService.notifyObservable$.subscribe((res:any) => {
       
+      if(res.allDocs) {
+        this.docs = [];
+        this.docs = res.allDocs.data;
+        console.log("All documents: ", this.docs)
+      }
       if(res.refreshDocs){
-          this.getAllDocs();
+        this.documentService.getAllDocuments();
       }
       if (res.loading) {
         this.loading = true;
@@ -41,22 +42,15 @@ export class DocumentListComponent implements OnInit {
   }
 
   /**
-   * Get all documents by sybscribing to the DocumentService.
-   */
-  getAllDocs() {
-    this.documentService.getAllDocuments().subscribe((res) => {
-      this.docs = res;
-    });
-  }
-
-  /**
    * Sends clicked items html to be loaded in the editor.
    * 
    * @param id The id of clicked document.
    */
   onDocumentClick(id:string) {
-    console.log(id);
-    this.loadEvent.emit(id);
+    console.log("Click");
+    this.documentService.getAllUsers();
+    this.documentService.getAllowedUsers(id);
+    this.documentService.documentClicked(id);
     this.selectedDocument = id;
   }
 }
