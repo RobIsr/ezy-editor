@@ -13,7 +13,6 @@ export class LayoutComponent {
     ) {
         // redirect to home if already logged in
         if (this.accountService.userValue) {
-            console.log(this.accountService.userValue);
             this.router.navigate(['/editor']);
         } else {
           this.router.navigate(['/login']);

@@ -30,6 +30,7 @@ export class LoginComponent {
         this.error = "";
 
         if (val.email && val.password) {
+          this.error = "";
             this.authService.login(val.email, val.password).subscribe((res) => {
               localStorage.setItem('JWT_TOKEN', JSON.stringify(res));
                 this.router.navigate(['/'])

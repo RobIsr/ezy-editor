@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "ci:start": "npm install wait-on & ng serve & wait-on http://localhost:4200",
-    "cy:run": "cypress run",
+    "cy:run": "cypress run --headed --no-exit",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",

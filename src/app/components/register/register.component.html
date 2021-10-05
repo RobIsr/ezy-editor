@@ -4,16 +4,16 @@
             <legend>Register</legend>
             <div class="form-field">
                 <label>Email:</label>
-                <input name="email" formControlName="email">
+                <input id="register-email" name="email" formControlName="email">
             </div>
             <div class="form-field">
                 <label>Password:</label>
-                <input name="password" formControlName="password" 
+                <input id="register-password" name="password" formControlName="password" 
                        type="password">
             </div>
         </fieldset>
         <div class="form-buttons">
-            <button class="button button-primary" 
+            <button id="register-btn" class="button button-primary" 
                     (click)="register()">Register</button>
         </div>
         <div class="link">

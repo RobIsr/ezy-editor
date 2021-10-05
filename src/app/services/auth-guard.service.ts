@@ -6,11 +6,11 @@ import { AuthService } from './auth.service';
 export class AuthGuardService implements CanActivate {
     constructor(
         private router: Router,
-        private accountService: AuthService
+        private authService: AuthService
     ) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const user = this.accountService.userValue;
+        const user = this.authService.userValue;
         if (user) {
             // authorised so return true
             return true;
