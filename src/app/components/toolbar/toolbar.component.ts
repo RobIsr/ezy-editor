@@ -26,7 +26,7 @@ export class ToolbarComponent implements OnInit {
   typing = false;
   searchInput:string = "";
   searching:boolean = false;
-  allowedUsers = [];
+  allowedUsers:string[] = [];
   allUsers = [];
   currentId = "";
 
@@ -86,19 +86,21 @@ export class ToolbarComponent implements OnInit {
 
   onUserClick(user:any) {
     this.documentService.addAllowedUser(this.currentId, user.username);
-    this.documentService.getAllowedUsers(this.currentId);
+    this.allowedUsers.push(user.username);
+    console.log(this.allowedUsers);
     this.searching = false;
     this.searchInput = "";
   }
 
-  onAllowedUserClick(user:any) {
+  onAllowedUserClick(user:string) {
     const jwt_token = JSON.parse(localStorage.getItem('JWT_TOKEN') as string);
     const decodedUser = this.getDecodedJwtToken(jwt_token.accessToken);
+    let idx:number = this.allowedUsers.indexOf(user);
 
-    if (user !== decodedUser.username){
+    if (user !== decodedUser.username as string){
       this.documentService.removeAllowedUser(this.currentId, user);
+      this.allowedUsers.splice(idx, 1);
     }
-    this.documentService.getAllowedUsers(this.currentId);
   }
 
   getDecodedJwtToken(token: string):User  {
