@@ -3,7 +3,6 @@
   "version": "4.0.0",
   "scripts": {
     "ng": "ng",
-    "ci:start": "npm install wait-on & ng serve & wait-on http://localhost:4200",
     "cy:run": "cypress run",
     "start": "ng serve",
     "build": "ng build",
