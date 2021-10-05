@@ -14,10 +14,10 @@ export class DocumentService {
 
   notifyObservable$ = this.notify.asObservable();
 
-  @Output() documentClickedEvent = new EventEmitter<string>();
+  @Output() documentClickedEvent = new EventEmitter<Doc>();
 
-  documentClicked(currentId: string) {
-    this.documentClickedEvent.emit(currentId);
+  documentClicked(currentDoc: Doc) {
+    this.documentClickedEvent.emit(currentDoc);
   }
 
   public notifyOther(data: any) {

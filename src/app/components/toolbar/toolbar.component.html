@@ -23,7 +23,7 @@
         <p>{{ fileName }}</p>
     </div>
 
-    <div class="toolbar-actions" *ngIf="currentId">
+    <div class="toolbar-actions" *ngIf="currentDoc && isOwner">
         <span>
             <select
             name="allowed-users" 

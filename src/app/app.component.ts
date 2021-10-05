@@ -6,8 +6,6 @@ import { Doc } from './models/doc';
 import { SocketService } from './services/socket.service';
 import { Socket } from 'ngx-socket-io';
 import tinymce from 'tinymce';
-import { AuthService } from './services/auth.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -42,7 +40,7 @@ export class AppComponent implements OnInit {
     });
 
     this.docService.documentClickedEvent.subscribe((res) => {
-      this.currentId = res;
+      this.currentId = res._id;
       this.loadToEditor(this.currentId);
     })
 
@@ -85,7 +83,6 @@ export class AppComponent implements OnInit {
   }
 
   saveDocument(fileName:any) {
-    console.log("From save: ");
     const document:Doc = {
       _id: "",
       name: fileName,
@@ -96,7 +93,6 @@ export class AppComponent implements OnInit {
     if (this.currentId != "") { // If currentId is set it means that document already exists.
       this.docService.updateOneDocument(document, this.currentId);
     } else {
-      console.log("Calling save in service");
       this.docService.saveDocument(document);
     }
   }
@@ -125,7 +121,6 @@ export class AppComponent implements OnInit {
     this.docService.notifyOther({
       new: true
     });
-    this.docService.documentClicked("");
   }
 
   openSaveDialog() {
@@ -149,7 +144,6 @@ export class AppComponent implements OnInit {
   }
 
   updateSocket(editorContent:any) {
-    console.log(editorContent);
     var doc = this.currentDoc as Doc
     this.socketService.sendMessage(this.currentId, doc.name, editorContent);
   }

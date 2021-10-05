@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Doc } from 'src/app/models/doc';
 import { DocumentService } from '../../services/document.service';
 
 @Component({
@@ -23,7 +24,6 @@ export class DocumentListComponent implements OnInit {
       if(res.allDocs) {
         this.docs = [];
         this.docs = res.allDocs.data;
-        console.log("All documents: ", this.docs)
       }
       if(res.refreshDocs){
         this.documentService.getAllDocuments();
@@ -44,13 +44,12 @@ export class DocumentListComponent implements OnInit {
   /**
    * Sends clicked items html to be loaded in the editor.
    * 
-   * @param id The id of clicked document.
+   * @param doc The clicked document.
    */
-  onDocumentClick(id:string) {
-    console.log("Click");
+  onDocumentClick(doc:Doc) {
     this.documentService.getAllUsers();
-    this.documentService.getAllowedUsers(id);
-    this.documentService.documentClicked(id);
-    this.selectedDocument = id;
+    this.documentService.getAllowedUsers(doc._id);
+    this.documentService.documentClicked(doc);
+    this.selectedDocument = doc._id;
   }
 }
