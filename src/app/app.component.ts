@@ -64,6 +64,7 @@ export class AppComponent implements OnInit {
           setup: (editor:any) => {
             editor.on('KeyUp', () => {
               this.editorContent = editor.getBody().innerHTML;
+              console.log(this.editorContent);
               this.updateSocket(editor.getBody().innerHTML);
             });
           },
@@ -145,6 +146,7 @@ export class AppComponent implements OnInit {
 
   updateSocket(editorContent:any) {
     var doc = this.currentDoc as Doc
+    
     this.socketService.sendMessage(this.currentId, doc.name, editorContent);
   }
 }
