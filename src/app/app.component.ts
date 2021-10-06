@@ -147,6 +147,6 @@ export class AppComponent implements OnInit {
   updateSocket(editorContent:any) {
     var doc = this.currentDoc as Doc
     
-    this.socketService.sendMessage(this.currentId, doc.name, editorContent);
+    this.socketService.sendMessage(this.currentDoc?.owner as string, this.currentId, doc.name, this.editorContent);
   }
 }

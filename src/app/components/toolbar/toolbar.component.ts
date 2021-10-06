@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import jwt_decode from 'jwt-decode';
 import { User } from 'src/app/models/user';
 import { Doc } from 'src/app/models/doc';
+import { SocketService } from 'src/app/services/socket.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -27,7 +28,7 @@ export class ToolbarComponent implements OnInit {
   typing = false;
   searchInput:string = "";
   searching:boolean = false;
-  allowedUsers:string[] = [];
+  allowedUsers:any[] = [];
   allUsers = [];
   currentDoc:Doc = {} as Doc;
   isOwner:boolean = false;
@@ -37,6 +38,7 @@ export class ToolbarComponent implements OnInit {
     private documentService: DocumentService,
     private authService: AuthService,
     private socket: Socket,
+    private socketService: SocketService
     ) {}
   ngOnInit(): void {
     const jwt_token = JSON.parse(localStorage.getItem('JWT_TOKEN') as string);
@@ -48,9 +50,11 @@ export class ToolbarComponent implements OnInit {
       }
       if (res.allowedUsers) {
         this.allowedUsers = res.allowedUsers.data;
+        console.log("Allowed users: ", this.allowedUsers);
       }
       if (res.allUsers) {
         this.allUsers = res.allUsers.data;
+        console.log("All users: ", this.allUsers);
       }
       if (res.allowedUsersUpdate) {
         this.documentService.getAllUsers();
@@ -59,6 +63,7 @@ export class ToolbarComponent implements OnInit {
 
     this.documentService.documentClickedEvent.subscribe((res) => {
       this.currentDoc = res;
+      console.log("Current document: ", this.currentDoc);
       if (this.user.username === this.currentDoc.owner) {
         this.isOwner = true;
       } else {
@@ -69,6 +74,10 @@ export class ToolbarComponent implements OnInit {
     // Listen to socket.
     this.socket.on("save", (save:boolean) => {
       this.typing = save;
+    });
+
+    this.socket.on("permission_updated", (data:any) => {
+      this.allowedUsers = data;
     });
   }
 
@@ -94,9 +103,9 @@ export class ToolbarComponent implements OnInit {
   }
 
   onUserClick(user:any) {
-    this.documentService.addAllowedUser(this.currentDoc._id, user.username);
-    this.allowedUsers.push(user.username);
-    console.log(this.allowedUsers);
+    console.log(this.currentDoc.owner);
+    this.socketService.addAllowedUser(this.currentDoc.owner as string, this.currentDoc._id, user.username);
+    console.log(user);
     this.searching = false;
     this.searchInput = "";
   }
@@ -104,11 +113,9 @@ export class ToolbarComponent implements OnInit {
   onAllowedUserClick(user:string) {
     const jwt_token = JSON.parse(localStorage.getItem('JWT_TOKEN') as string);
     const decodedUser = this.getDecodedJwtToken(jwt_token.accessToken);
-    let idx:number = this.allowedUsers.indexOf(user);
 
     if (user !== decodedUser.username as string){
-      this.documentService.removeAllowedUser(this.currentDoc._id, user);
-      this.allowedUsers.splice(idx, 1);
+      this.socketService.removeAllowedUser(this.currentDoc.owner as string, this.currentDoc._id, user);
     }
   }
 
