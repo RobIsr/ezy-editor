@@ -27,6 +27,7 @@ import { AuthGuardService } from './services/auth-guard.service';
 import { LayoutComponent } from './components/layout/layout.component';
 import { environment } from 'src/environments/environment';
 import { SearchPipe } from './services/search.pipe';
+import { GraphQLModule } from './graphql.module';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { SearchPipe } from './services/search.pipe';
     MatProgressSpinnerModule,
     SocketIoModule.forRoot(config),
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    GraphQLModule
   ],
   providers: [
     { 

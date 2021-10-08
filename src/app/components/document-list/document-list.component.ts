@@ -1,5 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Doc } from 'src/app/models/doc';
+import { User } from 'src/app/models/user';
+import { AuthService } from 'src/app/services/auth.service';
 import { DocumentService } from '../../services/document.service';
 
 @Component({
@@ -12,8 +14,13 @@ export class DocumentListComponent implements OnInit {
   public currentId:string = "";
   selectedDocument:string = "";
   loading:boolean = false;
+  user:User;
 
-  constructor(private documentService: DocumentService) {}
+  constructor(
+    private authService: AuthService,
+    private documentService: DocumentService) {
+    this.user = this.authService.getUser();
+  }
 
   ngOnInit(): void {
 
@@ -22,11 +29,10 @@ export class DocumentListComponent implements OnInit {
     this.documentService.notifyObservable$.subscribe((res:any) => {
       
       if(res.allDocs) {
-        this.docs = [];
-        this.docs = res.allDocs.data;
+        this.docs = res.allDocs;
       }
       if(res.refreshDocs){
-        this.documentService.getAllDocuments();
+        this.documentService.allDocsQuery.refetch();
       }
       if (res.loading) {
         this.loading = true;
@@ -48,7 +54,7 @@ export class DocumentListComponent implements OnInit {
    */
   onDocumentClick(doc:Doc) {
     this.documentService.getAllUsers();
-    this.documentService.getAllowedUsers(doc._id);
+    // this.documentService.getAllowedUsers(doc._id, doc.owner as string);
     this.documentService.documentClicked(doc);
     this.selectedDocument = doc._id;
   }

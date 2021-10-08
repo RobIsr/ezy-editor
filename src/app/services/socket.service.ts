@@ -12,7 +12,7 @@ export class SocketService {
     private authService: AuthService,
     private socket: Socket) {}
 
-  jwtToken = this.authService.userValue.accessToken;
+  jwtToken = this.authService.userToken.accessToken;
 
   sendMessage(owner: string, id: string, name: string, html: string) {
     var document = {owner: owner, id: id, name: name, html: html, jwtToken: this.jwtToken}
@@ -24,7 +24,6 @@ export class SocketService {
   }
 
   addAllowedUser(owner:string, docId:string, username:string) {
-    //this.documentService.addAllowedUser(docId, username);
     this.socket.emit('add_allowed_user', { owner, docId, username });
   }
 

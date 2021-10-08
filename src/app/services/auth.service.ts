@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
+import jwt_decode from 'jwt-decode';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { Token } from '../models/token.model';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -28,8 +30,12 @@ export class AuthService {
     loginUrl = `${environment.apiUrl}/login`;
     registerUrl = `${environment.apiUrl}/register`;
 
-    public get userValue():Token {
+    public get userToken():Token {
         return this.userSubject.value;
+    }
+
+    public getUser() {
+        return this.getDecodedJwtToken(this.userToken.accessToken);
     }
 
     /**
@@ -58,4 +64,14 @@ export class AuthService {
         this.userSubject.next(null);
         this.router.navigate(['/login']);
     }
+
+    getDecodedJwtToken(token: string):User  {
+        try{
+            return jwt_decode(token);
+        }
+        catch(error){
+            return {} as User;
+        }
+      }
 }
+

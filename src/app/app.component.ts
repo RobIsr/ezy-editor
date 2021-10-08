@@ -6,6 +6,8 @@ import { Doc } from './models/doc';
 import { SocketService } from './services/socket.service';
 import { Socket } from 'ngx-socket-io';
 import tinymce from 'tinymce';
+import { AuthService } from './services/auth.service';
+import { User } from './models/user';
 
 @Component({
   selector: 'app-root',
@@ -20,22 +22,25 @@ export class AppComponent implements OnInit {
   currentDoc:Doc | undefined;
   @Output() newMainEvent = new EventEmitter();
   dialogRef= "";
+  user:User;
 
   constructor(
+    private authService: AuthService,
     private docService: DocumentService,
     private socketService: SocketService,
     public saveDialog: MatDialog,
-    private socket: Socket,
-  ){}
+    private socket: Socket
+  ){
+    this.user = this.authService.getUser();
+  }
 
   ngOnInit(): void {
-    this.docService.getAllDocuments();
     // Subscribe to the observable to cache loaded documents
     // when a new get request has completed in the service.
     this.docService.notifyObservable$.subscribe(res => {
       if(res.allDocs){
           this.docs = [];
-          this.docs = res.allDocs.data;
+          this.docs = res.allDocs;
       }
     });
 
@@ -91,9 +96,10 @@ export class AppComponent implements OnInit {
     }
     
     //Check to see if document needs to inserted or updated.
-    if (this.currentId != "") { // If currentId is set it means that document already exists.
-      this.docService.updateOneDocument(document, this.currentId);
+    if (this.currentDoc) { // If currentId is set it means that document already exists.
+      this.docService.updateOneDocument(document, this.currentDoc._id);
     } else {
+      console.log("saving");
       this.docService.saveDocument(document);
     }
   }
@@ -145,8 +151,12 @@ export class AppComponent implements OnInit {
   }
 
   updateSocket(editorContent:any) {
-    var doc = this.currentDoc as Doc
-    
-    this.socketService.sendMessage(this.currentDoc?.owner as string, this.currentId, doc.name, this.editorContent);
+    if(this.currentDoc) {
+      this.socketService.sendMessage(
+        this.currentDoc?.owner as string,
+        this.currentId,
+        this.currentDoc?.name as string,
+        this.editorContent);
+    }
   }
 }

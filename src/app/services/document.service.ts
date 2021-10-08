@@ -1,14 +1,24 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Doc } from '../models/doc';
-import { share, shareReplay } from 'rxjs/operators';
+import {Apollo, QueryRef, gql} from 'apollo-angular';
+import { AuthService } from './auth.service';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DocumentService {
+
+  user:User;
+
+  public allDocsSubscription: Subscription;
+  public allDocsQuery: QueryRef<any>;
+
+  public allowedUsersSubscription: Subscription = null as unknown as Subscription;
+  public allowedUsersQuery: QueryRef<any> = null as unknown as QueryRef<any>;
 
   public notify = new BehaviorSubject<any>('');
 
@@ -17,6 +27,21 @@ export class DocumentService {
   @Output() documentClickedEvent = new EventEmitter<Doc>();
 
   documentClicked(currentDoc: Doc) {
+    this.allowedUsersQuery = this.apollo
+      .watchQuery({
+        query: gql`
+        {
+          oneDocument(username: "${currentDoc.owner}", docId: "${currentDoc._id}") {
+            allowedUsers
+          }
+        }
+        `,
+      });
+
+    //Subscribe to graphql query to fetch all documents.
+    this.allowedUsersSubscription = this.allowedUsersQuery.valueChanges.subscribe(({ data, loading }: { data: any; loading: boolean }) => {
+      this.notifyOther({allowedUsers: data.oneDocument.allowedUsers});
+    });
     this.documentClickedEvent.emit(currentDoc);
   }
 
@@ -26,7 +51,34 @@ export class DocumentService {
     }
   }
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private authService: AuthService,
+    private http: HttpClient,
+    private apollo: Apollo) {
+      //Get authenticated user.
+      this.user = this.authService.getUser();
+
+      this.allDocsQuery = this.apollo
+      .watchQuery({
+        query: gql`
+        {
+            allDocuments(username: "${this.user.username}") {
+              _id
+              owner
+              allowedUsers
+              name
+              html
+            }
+          }
+        `,
+      });
+
+      //Subscribe to graphql query to fetch all documents.
+      this.allDocsSubscription = this.allDocsQuery.valueChanges.subscribe(({ data, loading }: { data: any; loading: boolean }) => {
+        this.notifyOther({allDocs: data.allDocuments});
+        this.notifyOther({loading: loading});
+      });
+    }
 
   allDocsUrl = `${environment.apiUrl}/allDocs`;
   saveDocUrl = `${environment.apiUrl}/save`;
@@ -35,15 +87,6 @@ export class DocumentService {
   removeAllowedUserUrl = `${environment.apiUrl}/removeAllowedUser`;
   allowedUsers = `${environment.apiUrl}/allowedUsers`;
   allUsers = `${environment.apiUrl}/allUsers`;
-
-  getAllDocuments() {
-    this.notifyOther({loading: true});
-
-    return this.http.get(this.allDocsUrl).pipe(share()).subscribe(data => {
-      this.notifyOther({allDocs: data});
-      this.notifyOther({loading: false});
-    });
-  }
 
   saveDocument(document:Doc) {
     this.notifyOther({loading: true});
@@ -70,38 +113,9 @@ export class DocumentService {
     })
   }
 
-  getAllowedUsers(id:string) {
-    this.http.get(this.allowedUsers + `/${id}`).subscribe(res => {
-      console.log("Result: ", res);
-      this.notifyOther({allowedUsers: res});
-    });
-  }
-
   getAllUsers() {
     this.http.get(this.allUsers).subscribe(res => {
-      console.log("Result: ", res);
       this.notifyOther({allUsers: res});
     });
-  }
-
-  addAllowedUser(docId:string, username:string) {
-    this.http.put(this.updateAllowedUsersUrl, {
-      "_id": docId, 
-      "user": username
-    }).subscribe(data => {
-      console.log(data);
-      this.notifyOther({allowedUsersUpdate: true});
-    })
-  }
-
-  removeAllowedUser(docId:string, username:string) {
-    console.log("Request: ", username);
-    this.http.put(this.removeAllowedUserUrl, {
-      "_id": docId, 
-      "user": username
-    }).subscribe(data => {
-      console.log(data);
-      this.notifyOther({allowedUsersUpdate: true});
-    })
   }
 }

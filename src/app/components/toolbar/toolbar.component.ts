@@ -32,14 +32,17 @@ export class ToolbarComponent implements OnInit {
   allUsers = [];
   currentDoc:Doc = {} as Doc;
   isOwner:boolean = false;
-  user:User = {} as User;
+  user:User;
 
   constructor(
     private documentService: DocumentService,
     private authService: AuthService,
     private socket: Socket,
     private socketService: SocketService
-    ) {}
+    ) {
+      this.user = authService.getUser();
+      this.allowedUsers = this.currentDoc.allowedUsers;
+    }
   ngOnInit(): void {
     const jwt_token = JSON.parse(localStorage.getItem('JWT_TOKEN') as string);
     this.user = this.getDecodedJwtToken(jwt_token.accessToken);
@@ -49,21 +52,15 @@ export class ToolbarComponent implements OnInit {
           this.fileName = res.toolbarName;
       }
       if (res.allowedUsers) {
-        this.allowedUsers = res.allowedUsers.data;
-        console.log("Allowed users: ", this.allowedUsers);
+        this.allowedUsers = res.allowedUsers;
       }
       if (res.allUsers) {
         this.allUsers = res.allUsers.data;
-        console.log("All users: ", this.allUsers);
-      }
-      if (res.allowedUsersUpdate) {
-        this.documentService.getAllUsers();
       }
     });
 
     this.documentService.documentClickedEvent.subscribe((res) => {
       this.currentDoc = res;
-      console.log("Current document: ", this.currentDoc);
       if (this.user.username === this.currentDoc.owner) {
         this.isOwner = true;
       } else {
@@ -103,19 +100,17 @@ export class ToolbarComponent implements OnInit {
   }
 
   onUserClick(user:any) {
-    console.log(this.currentDoc.owner);
     this.socketService.addAllowedUser(this.currentDoc.owner as string, this.currentDoc._id, user.username);
-    console.log(user);
     this.searching = false;
     this.searchInput = "";
+    this.documentService.allowedUsersQuery.refetch();
   }
 
   onAllowedUserClick(user:string) {
-    const jwt_token = JSON.parse(localStorage.getItem('JWT_TOKEN') as string);
-    const decodedUser = this.getDecodedJwtToken(jwt_token.accessToken);
 
-    if (user !== decodedUser.username as string){
+    if (user !== this.user.username as string){
       this.socketService.removeAllowedUser(this.currentDoc.owner as string, this.currentDoc._id, user);
+      this.documentService.allowedUsersQuery.refetch();
     }
   }
 
