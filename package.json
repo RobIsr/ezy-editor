@@ -1,6 +1,6 @@
 {
   "name": "ezy-editor",
-  "version": "5.0.3",
+  "version": "6.0.0",
   "scripts": {
     "ng": "ng",
     "cy:run": "cypress run",
