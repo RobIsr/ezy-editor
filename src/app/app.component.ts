@@ -8,6 +8,7 @@ import { Socket } from 'ngx-socket-io';
 import tinymce from 'tinymce';
 import { AuthService } from './services/auth.service';
 import { User } from './models/user';
+import { PdfGeneratorComponent } from './components/pdf-generator/pdf-generator.component';
 
 @Component({
   selector: 'app-root',
@@ -141,6 +142,26 @@ export class AppComponent implements OnInit {
     }
     console.log("Opening Dialog!")
     const dialogRef = this.saveDialog.open(SaveDialogComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log("Result", result);
+        this.saveDocument(dialogRef.componentInstance.fileName);
+      }
+    });
+  }
+
+  openPdfGeneratorDialog() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.id = "pdf-generator-dialog";
+    dialogConfig.data = {
+      fileName: this.currentDoc?.name
+    }
+    console.log("Opening Pdf Dialog!")
+    const dialogRef = this.saveDialog.open(PdfGeneratorComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {

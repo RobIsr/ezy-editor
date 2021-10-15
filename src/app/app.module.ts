@@ -28,6 +28,7 @@ import { LayoutComponent } from './components/layout/layout.component';
 import { environment } from 'src/environments/environment';
 import { SearchPipe } from './services/search.pipe';
 import { GraphQLModule } from './graphql.module';
+import { PdfGeneratorComponent } from './components/pdf-generator/pdf-generator.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { GraphQLModule } from './graphql.module';
     LoginComponent,
     RegisterComponent,
     LayoutComponent,
-    SearchPipe
+    SearchPipe,
+    PdfGeneratorComponent
   ],
   imports: [
     BrowserModule,
@@ -68,6 +70,6 @@ import { GraphQLModule } from './graphql.module';
     AuthGuardService
   ],
   bootstrap: [LayoutComponent],
-  entryComponents: [SaveDialogComponent]
+  entryComponents: [SaveDialogComponent, PdfGeneratorComponent]
 })
 export class AppModule { }

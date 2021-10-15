@@ -80,7 +80,6 @@ export class DocumentService {
       });
     }
 
-  allDocsUrl = `${environment.apiUrl}/allDocs`;
   saveDocUrl = `${environment.apiUrl}/save`;
   updateDocUrl = `${environment.apiUrl}/update`;
   updateAllowedUsersUrl = `${environment.apiUrl}/updateAllowedUsers`;

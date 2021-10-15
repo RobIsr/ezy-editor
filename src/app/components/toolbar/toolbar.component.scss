@@ -5,6 +5,43 @@
     margin-bottom: 0.5em;
 }
 
+.toolbar-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.toolbar-button-wrapper {
+    height: 3em;
+    overflow: visible;
+}
+
+.toolbar-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+#save {
+    position: absolute;
+    left: 55px;
+}
+
+#add {
+    position: absolute;
+    left: 20px;
+}
+
+#pdf {
+    position: absolute;
+    left: 100px;
+}
+
+#logout {
+    position: absolute;
+    right: 20px;
+}
+
 .toolbar-actions {
     display: flex;
     flex-direction: row;
@@ -16,24 +53,6 @@
     font-size: 30px;
     color: #4098f7;
     cursor: pointer;
-}
-
-.save {
-    position: absolute;
-    top: 18px;
-    left: 15px;
-}
-
-.new {
-    position: absolute;
-    top: 18px;
-    left: 60px;
-}
-
-.logout {
-    position: absolute;
-    top: 18px;
-    right: 15px;
 }
 
 .toolbar-filename {

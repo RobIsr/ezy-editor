@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>Save document</h2>
+<mat-dialog-content class="mat-typography">
+    <mat-form-field appearance="fill">
+        <mat-label>Filename</mat-label>
+        <input id="filename-input" matInput required [(ngModel)]="fileName" [value]="fileName">
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close color="warn">Cancel</button>
+  <button id="confirm-save" mat-button color="primary" [mat-dialog-close]="true" (click)="save()" cdkFocusInitial>Save</button>
+</mat-dialog-actions>

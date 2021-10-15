@@ -1,26 +1,37 @@
 <div class="toolbar">
-    <span id="save" class="icon save" (click)="onSave()">
-        <fa-icon [icon]="faSave">
-        </fa-icon>
-    </span>
-
-    <span id="new" class="icon new" (click)="onNew()">
-        <fa-icon [icon]="faPlus">
-        </fa-icon>
-    </span>
-
-    <span id="logout" class="icon logout" (click)="onLogout()">
-        <fa-icon [icon]="faSignout">
-        </fa-icon>
-    </span>
-
-    <div id="not-saved-wrapper" *ngIf="typing">
-        <span id="not-saved"></span>
-        <span>Someone is typing...</span>
+    <div class="toolbar-title">
+        <div class="toolbar-filename">
+            <p>{{ fileName }}</p>
+            <div id="not-saved-wrapper" *ngIf="typing">
+                <span id="not-saved"></span>
+                <span>Someone is typing...</span>
+            </div>
+        </div>
     </div>
+    <div class="toolbar-button-wrapper">
+        <div class="toolbar-buttons">
+            <div>
+                <span id="save" class="icon save" (click)="onSave()">
+                    <fa-icon [icon]="faSave">
+                    </fa-icon>
+                </span>
+        
+                <span id="new" class="icon new" (click)="onNew()">
+                    <fa-icon [icon]="faPlus">
+                    </fa-icon>
+                </span>
 
-    <div class="toolbar-filename">
-        <p>{{ fileName }}</p>
+                <span id="pdf" class="icon pdf" *ngIf="displayPdf" (click)="onPdf()">
+                    <fa-icon [icon]="faPdf">
+                    </fa-icon>
+                </span>
+        
+                <span id="logout" class="icon logout" (click)="onLogout()">
+                    <fa-icon [icon]="faSignout">
+                    </fa-icon>
+                </span>
+            </div>
+        </div>
     </div>
 
     <div class="toolbar-actions" *ngIf="currentDoc && isOwner">

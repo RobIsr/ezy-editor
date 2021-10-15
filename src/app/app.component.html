@@ -4,6 +4,7 @@
   <div class="editor">
     <app-toolbar 
       (saveEvent)="openSaveDialog()"
+      (generatePdfEvent)="openPdfGeneratorDialog()"
       (newEvent)="newDocument()"
       ></app-toolbar>
     <textarea id="editor"></textarea>

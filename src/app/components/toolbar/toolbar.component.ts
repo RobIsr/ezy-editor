@@ -3,6 +3,7 @@ import { faSave } from '@fortawesome/free-solid-svg-icons/faSave';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { DocumentService } from '../../services/document.service';
 import { Socket } from 'ngx-socket-io';
 import { AuthService } from 'src/app/services/auth.service';
@@ -19,9 +20,11 @@ import { SocketService } from 'src/app/services/socket.service';
 export class ToolbarComponent implements OnInit {
   UNSAVED_MESSAGE = "(Unsaved document...)";
   @Output() saveEvent = new EventEmitter();
+  @Output() generatePdfEvent = new EventEmitter();
   @Output() newEvent = new EventEmitter();
   faSave = faSave;
   faPlus = faPlus;
+  faPdf = faFilePdf;
   faDelete = faTrashAlt;
   faSignout = faSignOutAlt;
   fileName:string = this.UNSAVED_MESSAGE; //To be displayed in toolbar when document is open.
@@ -33,6 +36,7 @@ export class ToolbarComponent implements OnInit {
   currentDoc:Doc = {} as Doc;
   isOwner:boolean = false;
   user:User;
+  displayPdf:boolean = false;
 
   constructor(
     private documentService: DocumentService,
@@ -61,6 +65,7 @@ export class ToolbarComponent implements OnInit {
 
     this.documentService.documentClickedEvent.subscribe((res) => {
       this.currentDoc = res;
+      this.displayPdf = true;
       if (this.user.username === this.currentDoc.owner) {
         this.isOwner = true;
       } else {
@@ -84,7 +89,14 @@ export class ToolbarComponent implements OnInit {
 
   onNew() {
     this.fileName = this.UNSAVED_MESSAGE;
+    this.displayPdf = false;
+    this.isOwner = false;
     this.newEvent.emit();
+  }
+
+  onPdf() {
+    console.log("Generating PDF")
+    this.generatePdfEvent.emit();
   }
 
   onLogout() {
