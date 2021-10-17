@@ -20,7 +20,6 @@ import { SocketService } from 'src/app/services/socket.service';
 export class ToolbarComponent implements OnInit {
   UNSAVED_MESSAGE = "(Unsaved document...)";
   @Output() saveEvent = new EventEmitter();
-  @Output() generatePdfEvent = new EventEmitter();
   @Output() newEvent = new EventEmitter();
   faSave = faSave;
   faPlus = faPlus;
@@ -34,9 +33,10 @@ export class ToolbarComponent implements OnInit {
   allowedUsers:any[] = [];
   allUsers = [];
   currentDoc:Doc = {} as Doc;
-  isOwner:boolean = false;
   user:User;
   displayPdf:boolean = false;
+  generatingPdf:boolean = false;
+  isOwner:boolean = false;
 
   constructor(
     private documentService: DocumentService,
@@ -60,6 +60,12 @@ export class ToolbarComponent implements OnInit {
       }
       if (res.allUsers) {
         this.allUsers = res.allUsers.data;
+      }
+      if (res.generating_pdf) {
+        this.generatingPdf = true;
+      }
+      if (res.generating_pdf_complete) {
+        this.generatingPdf = false;
       }
     });
 
@@ -95,8 +101,8 @@ export class ToolbarComponent implements OnInit {
   }
 
   onPdf() {
-    console.log("Generating PDF")
-    this.generatePdfEvent.emit();
+    console.log("Generating PDF");
+    this.documentService.generatePdf(this.currentDoc?.html as string);
   }
 
   onLogout() {

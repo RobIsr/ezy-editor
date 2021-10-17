@@ -21,10 +21,13 @@
                     </fa-icon>
                 </span>
 
-                <span id="pdf" class="icon pdf" *ngIf="displayPdf" (click)="onPdf()">
-                    <fa-icon [icon]="faPdf">
-                    </fa-icon>
-                </span>
+                <div class="spinner-container" *ngIf="generatingPdf; else elseBlock"><mat-spinner [diameter]="30"></mat-spinner></div>
+                <ng-template #elseBlock>
+                    <span id="pdf" class="icon pdf" *ngIf="displayPdf" (click)="onPdf()">
+                        <fa-icon [icon]="faPdf">
+                        </fa-icon>
+                    </span>
+                </ng-template>
         
                 <span id="logout" class="icon logout" (click)="onLogout()">
                     <fa-icon [icon]="faSignout">

@@ -42,6 +42,12 @@
     right: 20px;
 }
 
+.spinner-container {
+    position: absolute;
+    top: 50px;
+    left: 100px;
+}
+
 .toolbar-actions {
     display: flex;
     flex-direction: row;

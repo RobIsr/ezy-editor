@@ -6,6 +6,7 @@ import { Doc } from '../models/doc';
 import {Apollo, QueryRef, gql} from 'apollo-angular';
 import { AuthService } from './auth.service';
 import { User } from '../models/user';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +55,7 @@ export class DocumentService {
   constructor(
     private authService: AuthService,
     private http: HttpClient,
+    private router: Router,
     private apollo: Apollo) {
       //Get authenticated user.
       this.user = this.authService.getUser();
@@ -86,6 +88,7 @@ export class DocumentService {
   removeAllowedUserUrl = `${environment.apiUrl}/removeAllowedUser`;
   allowedUsers = `${environment.apiUrl}/allowedUsers`;
   allUsers = `${environment.apiUrl}/allUsers`;
+  generatePdfUrl = `${environment.apiUrl}/generatePdf`;
 
   saveDocument(document:Doc) {
     this.notifyOther({loading: true});
@@ -115,6 +118,19 @@ export class DocumentService {
   getAllUsers() {
     this.http.get(this.allUsers).subscribe(res => {
       this.notifyOther({allUsers: res});
+    });
+  }
+
+  generatePdf(html:string) {
+    this.notifyOther({generating_pdf: true});
+    this.http.post(this.generatePdfUrl, { 
+      "html": html 
+    },
+    {'responseType'  : 'blob'}).subscribe(data => {
+      this.notifyOther({generating_pdf_complete: true});
+      var file = new Blob([data], {type: 'application/pdf'});
+      var fileURL = URL.createObjectURL(file);
+      window.open(fileURL);
     });
   }
 }
