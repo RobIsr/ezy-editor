@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
@@ -28,7 +28,7 @@ import { LayoutComponent } from './components/layout/layout.component';
 import { environment } from 'src/environments/environment';
 import { SearchPipe } from './services/search.pipe';
 import { GraphQLModule } from './graphql.module';
-import { PdfGeneratorComponent } from './components/pdf-generator/pdf-generator.component';
+import { RedirectGuard } from './redirect-guard';
 
 @NgModule({
   declarations: [
@@ -40,7 +40,6 @@ import { PdfGeneratorComponent } from './components/pdf-generator/pdf-generator.
     RegisterComponent,
     LayoutComponent,
     SearchPipe,
-    PdfGeneratorComponent
   ],
   imports: [
     BrowserModule,
@@ -57,7 +56,7 @@ import { PdfGeneratorComponent } from './components/pdf-generator/pdf-generator.
     SocketIoModule.forRoot(config),
     AppRoutingModule,
     ReactiveFormsModule,
-    GraphQLModule
+    GraphQLModule,
   ],
   providers: [
     { 
@@ -67,9 +66,10 @@ import { PdfGeneratorComponent } from './components/pdf-generator/pdf-generator.
       provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true
     },
     SocketService,
-    AuthGuardService
+    AuthGuardService,
+    RedirectGuard
   ],
   bootstrap: [LayoutComponent],
-  entryComponents: [SaveDialogComponent, PdfGeneratorComponent]
+  entryComponents: [SaveDialogComponent]
 })
 export class AppModule { }
