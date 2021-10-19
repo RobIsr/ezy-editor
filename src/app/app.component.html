@@ -5,6 +5,7 @@
     <app-toolbar 
       (saveEvent)="openSaveDialog()"
       (newEvent)="newDocument()"
+      (commentEvent)="addComment($event)"
       ></app-toolbar>
     <textarea id="editor"></textarea>
   </div>

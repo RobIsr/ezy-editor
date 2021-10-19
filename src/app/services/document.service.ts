@@ -46,6 +46,14 @@ export class DocumentService {
     this.documentClickedEvent.emit(currentDoc);
   }
 
+  selectionChanged(sel:string) {
+    if (sel) {
+      this.notifyOther({ selection_started: true });
+    } else {
+      this.notifyOther({ selection_ended: true });
+    }
+  }
+
   public notifyOther(data: any) {
     if (data) {
         this.notify.next(data);
@@ -132,5 +140,13 @@ export class DocumentService {
       var fileURL = URL.createObjectURL(file);
       window.open(fileURL);
     });
+  }
+
+  addComment(text:string, docId:string) {
+    console.log("Adding: ", text, " to document: ", docId);
+  }
+
+  removeComment(commentId:string, docId:string) {
+    console.log("Removing comment wit id: ", commentId, " from document: ", docId);
   }
 }

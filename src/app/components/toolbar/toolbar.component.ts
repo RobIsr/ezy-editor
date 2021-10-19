@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { faSave } from '@fortawesome/free-solid-svg-icons/faSave';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { faComment } from '@fortawesome/free-solid-svg-icons';
 import { DocumentService } from '../../services/document.service';
 import { Socket } from 'ngx-socket-io';
 import { AuthService } from 'src/app/services/auth.service';
@@ -11,6 +11,7 @@ import jwt_decode from 'jwt-decode';
 import { User } from 'src/app/models/user';
 import { Doc } from 'src/app/models/doc';
 import { SocketService } from 'src/app/services/socket.service';
+import tinymce from 'tinymce';
 
 @Component({
   selector: 'app-toolbar',
@@ -21,11 +22,12 @@ export class ToolbarComponent implements OnInit {
   UNSAVED_MESSAGE = "(Unsaved document...)";
   @Output() saveEvent = new EventEmitter();
   @Output() newEvent = new EventEmitter();
+  @Output() commentEvent = new EventEmitter();
   faSave = faSave;
   faPlus = faPlus;
   faPdf = faFilePdf;
-  faDelete = faTrashAlt;
   faSignout = faSignOutAlt;
+  faComment = faComment;
   fileName:string = this.UNSAVED_MESSAGE; //To be displayed in toolbar when document is open.
   typing = false;
   searchInput:string = "";
@@ -37,12 +39,15 @@ export class ToolbarComponent implements OnInit {
   displayPdf:boolean = false;
   generatingPdf:boolean = false;
   isOwner:boolean = false;
+  isSelecting:boolean = false;
+  selectedText = "";
 
   constructor(
     private documentService: DocumentService,
     private authService: AuthService,
     private socket: Socket,
-    private socketService: SocketService
+    private socketService: SocketService,
+    private cdr: ChangeDetectorRef
     ) {
       this.user = authService.getUser();
       this.allowedUsers = this.currentDoc.allowedUsers;
@@ -66,6 +71,16 @@ export class ToolbarComponent implements OnInit {
       }
       if (res.generating_pdf_complete) {
         this.generatingPdf = false;
+      }
+      if (res.selection_started) {
+        console.log("Selection start");
+        this.isSelecting = true;
+        this.cdr.detectChanges();
+      }
+      if (res.selection_ended) {
+        this.isSelecting = false;
+        console.log("Selection end");
+        this.cdr.detectChanges();
       }
     });
 
@@ -103,6 +118,11 @@ export class ToolbarComponent implements OnInit {
   onPdf() {
     console.log("Generating PDF");
     this.documentService.generatePdf(this.currentDoc?.html as string);
+  }
+
+  onComment() {
+    console.log("Adding comment...");
+    this.commentEvent.emit("This is a comment...");
   }
 
   onLogout() {

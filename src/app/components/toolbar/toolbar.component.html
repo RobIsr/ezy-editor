@@ -28,6 +28,11 @@
                         </fa-icon>
                     </span>
                 </ng-template>
+
+                <span id="comment" class="icon comment" *ngIf="isSelecting" (click)="onComment()">
+                    <fa-icon [icon]="faComment">
+                    </fa-icon>
+                </span>
         
                 <span id="logout" class="icon logout" (click)="onLogout()">
                     <fa-icon [icon]="faSignout">
