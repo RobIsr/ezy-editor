@@ -8,8 +8,6 @@ import { Socket } from 'ngx-socket-io';
 import tinymce from 'tinymce';
 import { AuthService } from './services/auth.service';
 import { User } from './models/user';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { ElementSchemaRegistry } from '@angular/compiler';
 
 @Component({
   selector: 'app-root',
@@ -68,7 +66,7 @@ export class AppComponent implements OnInit {
       {
           selector: "#editor",
           base_url: './tinymce',
-          content_css : "./assets/editor.css",
+          content_css : "./assets/content.css",
           setup: (editor:any) => {
             editor.on('KeyUp', () => {
               this.editorContent = editor.getBody().innerHTML;
@@ -112,19 +110,31 @@ export class AppComponent implements OnInit {
   }
 
   loadToEditor(id:string) {
-    const document = this.docs.find(doc => doc._id === id);
+    const doc = this.docs.find(doc => doc._id === id);
 
-    this.currentDoc = document;
+    this.currentDoc = doc;
 
     this.currentId = id; //Store id for the document currently opened.
-    if (document) {
-      tinymce.activeEditor.setContent(document.html);
-      this.editorContent = document.html;
+    if (doc) {
+      tinymce.activeEditor.setContent(doc.html);
+      this.editorContent = doc.html;
       this.docService.notifyOther({
-        toolbarName: document.name
+        toolbarName: doc.name
       });
+      console.log(this.currentDoc?.html);
     }
     this.socketService.createRoom(this.currentId);
+
+    let commentTooltips = tinymce.activeEditor.getBody().getElementsByClassName("comment");
+    let toolTipItems = Array.from(commentTooltips);
+
+    toolTipItems.forEach((elem) => {
+      elem.addEventListener("click", () => {
+        console.log(elem);
+        let commentText = elem.getElementsByClassName("tooltiptext")[0].innerHTML;
+        alert(commentText);
+      });
+    });
   }
 
   newDocument() {
@@ -139,30 +149,45 @@ export class AppComponent implements OnInit {
 
   addComment(comment:string) {
     this.handleComment(comment);
-    console.log(this.currentDoc?.html);
   }
 
   handleComment(comment:string) {
+    tinymce.activeEditor.execCommand('HiliteColor', false, '#FFD700');
     let commentNode = tinymce.activeEditor.selection.getNode();
-    let span = document.createElement("span");
+    let tooltip = document.createElement("span");
 
-    span.addEventListener("click", (event) => {
-      let commentElem = tinymce.activeEditor.dom.doc.getElementById("comment") as Element;
-      let normalElem = document.createElement("span");
-      let tooltiptext = commentElem.getElementsByClassName("tooltiptext");
+    commentNode.classList.add("comment");
+    commentNode.getElementsByTagName("span")[0].classList.add("tooltip");
 
-      tooltiptext[0].remove();
-      commentElem.classList.remove("comment");
-      normalElem.innerHTML = commentElem.innerHTML;
-      
-      commentElem.replaceWith(normalElem);
+    tooltip.innerHTML = comment;
+    tooltip.className = "tooltiptext";
+    commentNode.appendChild(tooltip);
+
+    commentNode.addEventListener("click", () => {
+      let commentText = commentNode.getElementsByClassName("tooltiptext")[0].innerHTML;
+      alert(commentText);
     });
-    commentNode.className = "tooltip";
-    span.className = "tooltiptext";
-    span.innerHTML = "This is a comment...";
 
-    commentNode.appendChild(span);
-    commentNode.id = "comment";
+    this.editorContent = tinymce.activeEditor.getBody().innerHTML;
+    
+
+    // span.addEventListener("click", (event) => {
+    //   let commentElem = tinymce.activeEditor.dom.doc.getElementById("comment") as Element;
+    //   let normalElem = document.createElement("span");
+    //   let tooltiptext = commentElem.getElementsByClassName("tooltiptext");
+
+    //   tooltiptext[0].remove();
+    //   commentElem.classList.remove("comment");
+    //   normalElem.innerHTML = commentElem.innerHTML;
+      
+    //   commentElem.replaceWith(normalElem);
+    // });
+    // commentNode.className = "tooltip";
+    // span.className = "tooltiptext";
+    // span.innerHTML = "This is a comment...";
+
+    // commentNode.appendChild(span);
+    // commentNode.id = "comment";
   }
 
   openSaveDialog() {
