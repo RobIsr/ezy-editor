@@ -138,12 +138,11 @@ export class AppComponent implements OnInit {
   }
 
   addComment(comment:string) {
-    this.docService.addComment(comment, this.currentId);
     this.handleComment(comment);
+    console.log(this.currentDoc?.html);
   }
 
   handleComment(comment:string) {
-    tinymce.activeEditor.execCommand('HiliteColor', false, '#FFD700');
     let commentNode = tinymce.activeEditor.selection.getNode();
     let span = document.createElement("span");
 
@@ -158,7 +157,6 @@ export class AppComponent implements OnInit {
       
       commentElem.replaceWith(normalElem);
     });
-
     commentNode.className = "tooltip";
     span.className = "tooltiptext";
     span.innerHTML = "This is a comment...";

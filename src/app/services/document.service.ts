@@ -97,6 +97,7 @@ export class DocumentService {
   allowedUsers = `${environment.apiUrl}/allowedUsers`;
   allUsers = `${environment.apiUrl}/allUsers`;
   generatePdfUrl = `${environment.apiUrl}/generatePdf`;
+  addCommentUrl = `${environment.apiUrl}/addComment`;
 
   saveDocument(document:Doc) {
     this.notifyOther({loading: true});
@@ -140,13 +141,5 @@ export class DocumentService {
       var fileURL = URL.createObjectURL(file);
       window.open(fileURL);
     });
-  }
-
-  addComment(text:string, docId:string) {
-    console.log("Adding: ", text, " to document: ", docId);
-  }
-
-  removeComment(commentId:string, docId:string) {
-    console.log("Removing comment wit id: ", commentId, " from document: ", docId);
   }
 }
