@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Manage comment</h2>
+<mat-dialog-content class="mat-typography">
+    <div *ngIf="delete">
+      {{ comment }}
+    </div>
+    <mat-form-field appearance="fill" *ngIf="!delete">
+        <mat-label>Add comment</mat-label>
+        <textarea id="comment-input" rows="4" cols="50" matInput required [(ngModel)]="comment" [value]="comment"></textarea>
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close color="warn">Cancel</button>
+  <button *ngIf="!delete" id="confirm-save-comment" mat-button color="primary" [mat-dialog-close]="true" (click)="save()" cdkFocusInitial>Save</button>
+  <button *ngIf="delete" id="confirm-delete-comment" mat-button color="primary" (click)="deleteComment()" cdkFocusInitial>Delete</button>
+</mat-dialog-actions>

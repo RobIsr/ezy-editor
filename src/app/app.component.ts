@@ -1,5 +1,5 @@
-import { Component, EventEmitter, OnInit, Output, ViewContainerRef } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewContainerRef } from '@angular/core';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { SaveDialogComponent } from './components/save-dialog/save-dialog.component';
 import { DocumentService } from './services/document.service';
 import { Doc } from './models/doc';
@@ -8,6 +8,9 @@ import { Socket } from 'ngx-socket-io';
 import tinymce from 'tinymce';
 import { AuthService } from './services/auth.service';
 import { User } from './models/user';
+import { CommentDialogComponent } from './comment-dialog/comment-dialog.component';
+import * as uuid from 'uuid';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +25,7 @@ export class AppComponent implements OnInit {
   currentDoc:Doc | undefined;
   @Output() newMainEvent = new EventEmitter();
   dialogRef= "";
+  commentDialogRef = null as unknown as MatDialogRef<CommentDialogComponent, any>;
   user:User;
 
   constructor(
@@ -29,6 +33,7 @@ export class AppComponent implements OnInit {
     private docService: DocumentService,
     private socketService: SocketService,
     public saveDialog: MatDialog,
+    public commentDialog: MatDialog,
     private socket: Socket
   ){
     this.user = this.authService.getUser();
@@ -125,14 +130,39 @@ export class AppComponent implements OnInit {
     }
     this.socketService.createRoom(this.currentId);
 
-    let commentTooltips = tinymce.activeEditor.getBody().getElementsByClassName("comment");
-    let toolTipItems = Array.from(commentTooltips);
+    let comments = tinymce.activeEditor.getBody().getElementsByClassName("highlight");
+    let commentItems = Array.from(comments);
 
-    toolTipItems.forEach((elem) => {
-      elem.addEventListener("click", () => {
+    commentItems.forEach((elem) => {
+      elem.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         console.log(elem);
-        let commentText = elem.getElementsByClassName("tooltiptext")[0].innerHTML;
-        alert(commentText);
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
+        dialogConfig.id = "comment-dialog1";
+        dialogConfig.data = {
+          comment: elem.attributes.getNamedItem("data-comment")?.value,
+          delete: true
+        }
+
+        this.commentDialogRef = this.commentDialog.open(CommentDialogComponent, dialogConfig);
+
+        this.commentDialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            if (result.delete) {
+              let cleanElem = document.createElement("span");
+
+              cleanElem.innerHTML = elem.innerHTML;
+              elem.replaceWith(cleanElem);
+              this.editorContent = tinymce.activeEditor.getContent();
+            } else {
+              this.handleComment(result, this.commentDialogRef);
+            }
+          }
+        });
       });
     });
   }
@@ -147,47 +177,72 @@ export class AppComponent implements OnInit {
     });
   }
 
-  addComment(comment:string) {
-    this.handleComment(comment);
+  addComment() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.id = "comment-dialog2";
+    dialogConfig.data = {
+      comment: "",
+      delete: false
+    }
+    this.commentDialogRef = this.commentDialog.open(CommentDialogComponent, dialogConfig);
+
+    this.commentDialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        if (res.delete) {
+          console.log("Deleting comment...");
+        } else {
+          this.handleComment(this.commentDialogRef.componentInstance.comment, this.commentDialogRef);
+        }
+      }
+    });
+    
   }
 
-  handleComment(comment:string) {
-    tinymce.activeEditor.execCommand('HiliteColor', false, '#FFD700');
+  handleComment(comment:string, _commentDialogRef: MatDialogRef<CommentDialogComponent, any> | undefined) {
+    const selectionId = uuid.v4();
+    let commentNodeContent = tinymce.activeEditor.selection.getContent();
+
+    tinymce.activeEditor.selection.setContent(`<span class='highlight ${selectionId}' data-comment='${comment}'>${commentNodeContent}</span>`);
+
     let commentNode = tinymce.activeEditor.selection.getNode();
-    let tooltip = document.createElement("span");
+    let highlight = commentNode.getElementsByClassName(`${selectionId}`)[0];
 
-    commentNode.classList.add("comment");
-    commentNode.getElementsByTagName("span")[0].classList.add("tooltip");
+    console.log(highlight);
 
-    tooltip.innerHTML = comment;
-    tooltip.className = "tooltiptext";
-    commentNode.appendChild(tooltip);
+    highlight?.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
 
-    commentNode.addEventListener("click", () => {
-      let commentText = commentNode.getElementsByClassName("tooltiptext")[0].innerHTML;
-      alert(commentText);
+      const dialogConfig = new MatDialogConfig();
+
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.id = "comment-dialog3";
+      dialogConfig.data = {
+        comment: comment,
+        delete: true
+      }
+      this.commentDialogRef = this.commentDialog.open(CommentDialogComponent, dialogConfig);
+
+      this.commentDialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          if (result.delete) {
+            let selectedElem = commentNode.getElementsByClassName("highlight")[0];
+            let cleanElem = document.createElement("span");
+
+            cleanElem.innerHTML = selectedElem.innerHTML;
+            selectedElem.replaceWith(cleanElem);
+          } else {
+            this.handleComment(result, this.commentDialogRef);
+          }
+        }
+      });
     });
 
     this.editorContent = tinymce.activeEditor.getBody().innerHTML;
-    
-
-    // span.addEventListener("click", (event) => {
-    //   let commentElem = tinymce.activeEditor.dom.doc.getElementById("comment") as Element;
-    //   let normalElem = document.createElement("span");
-    //   let tooltiptext = commentElem.getElementsByClassName("tooltiptext");
-
-    //   tooltiptext[0].remove();
-    //   commentElem.classList.remove("comment");
-    //   normalElem.innerHTML = commentElem.innerHTML;
-      
-    //   commentElem.replaceWith(normalElem);
-    // });
-    // commentNode.className = "tooltip";
-    // span.className = "tooltiptext";
-    // span.innerHTML = "This is a comment...";
-
-    // commentNode.appendChild(span);
-    // commentNode.id = "comment";
   }
 
   openSaveDialog() {
@@ -199,12 +254,10 @@ export class AppComponent implements OnInit {
     dialogConfig.data = {
       fileName: this.currentDoc?.name
     }
-    console.log("Opening Dialog!")
     const dialogRef = this.saveDialog.open(SaveDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log("Result", result);
         this.saveDocument(dialogRef.componentInstance.fileName);
       }
     });

@@ -122,7 +122,7 @@ export class ToolbarComponent implements OnInit {
 
   onComment() {
     console.log("Adding comment...");
-    this.commentEvent.emit("This is a comment...");
+    this.commentEvent.emit();
   }
 
   onLogout() {
