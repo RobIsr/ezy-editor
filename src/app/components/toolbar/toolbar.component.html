@@ -38,6 +38,11 @@
                     <fa-icon [icon]="faSignout">
                     </fa-icon>
                 </span>
+
+                <span *ngIf="displayPdf" id="email" class="icon email" (click)="onSendInvite()">
+                    <fa-icon [icon]="faEnvelope">
+                    </fa-icon>
+                </span>
             </div>
         </div>
     </div>

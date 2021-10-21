@@ -4,6 +4,7 @@ import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { DocumentService } from '../../services/document.service';
 import { Socket } from 'ngx-socket-io';
 import { AuthService } from 'src/app/services/auth.service';
@@ -28,6 +29,7 @@ export class ToolbarComponent implements OnInit {
   faPdf = faFilePdf;
   faSignout = faSignOutAlt;
   faComment = faComment;
+  faEnvelope = faEnvelope;
   fileName:string = this.UNSAVED_MESSAGE; //To be displayed in toolbar when document is open.
   typing = false;
   searchInput:string = "";
@@ -123,6 +125,10 @@ export class ToolbarComponent implements OnInit {
   onComment() {
     console.log("Adding comment...");
     this.commentEvent.emit();
+  }
+
+  onSendInvite() {
+    console.log("Sending invite...");
   }
 
   onLogout() {

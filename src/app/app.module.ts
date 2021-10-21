@@ -30,6 +30,7 @@ import { SearchPipe } from './services/search.pipe';
 import { GraphQLModule } from './graphql.module';
 import { RedirectGuard } from './redirect-guard';
 import { CommentDialogComponent } from './comment-dialog/comment-dialog.component';
+import { EmailDialogComponent } from './components/email-dialog/email-dialog.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { CommentDialogComponent } from './comment-dialog/comment-dialog.componen
     LayoutComponent,
     SearchPipe,
     CommentDialogComponent,
+    EmailDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -72,6 +74,10 @@ import { CommentDialogComponent } from './comment-dialog/comment-dialog.componen
     RedirectGuard
   ],
   bootstrap: [LayoutComponent],
-  entryComponents: [SaveDialogComponent, CommentDialogComponent]
+  entryComponents: [
+    SaveDialogComponent,
+    CommentDialogComponent,
+    EmailDialogComponent
+  ]
 })
 export class AppModule { }

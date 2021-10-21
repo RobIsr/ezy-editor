@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewContainerRef } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { SaveDialogComponent } from './components/save-dialog/save-dialog.component';
 import { DocumentService } from './services/document.service';
@@ -10,7 +10,6 @@ import { AuthService } from './services/auth.service';
 import { User } from './models/user';
 import { CommentDialogComponent } from './comment-dialog/comment-dialog.component';
 import * as uuid from 'uuid';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-root',
@@ -235,6 +234,7 @@ export class AppComponent implements OnInit {
 
             cleanElem.innerHTML = selectedElem.innerHTML;
             selectedElem.replaceWith(cleanElem);
+            this.editorContent = tinymce.activeEditor.getContent();
           } else {
             this.handleComment(result, this.commentDialogRef);
           }
