@@ -1,11 +1,11 @@
 <h2 mat-dialog-title>Send invite to edit</h2>
 <mat-dialog-content class="mat-typography">
-    <mat-form-field appearance="fill" *ngIf="!delete">
+    <mat-form-field appearance="fill">
         <mat-label>Email</mat-label>
-        <input type="email" id="email-input" rows="4" cols="50" matInput required [(ngModel)]="email" [value]="email">
+        <input type="email" id="email-input" matInput required [(ngModel)]="email" [value]="email">
     </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close color="warn">Cancel</button>
-  <button id="confirm-send-email" mat-button color="primary" [mat-dialog-close]="true" (click)="sendInvite()" cdkFocusInitial>Send</button>
+  <button id="confirm-send-email" mat-button color="primary" (click)="sendInvite()" cdkFocusInitial>Send</button>
 </mat-dialog-actions>

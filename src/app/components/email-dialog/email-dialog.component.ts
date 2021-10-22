@@ -18,5 +18,6 @@ export class EmailDialogComponent {
 
   sendInvite() {
     console.log("Email: ", this.email);
+    this.dialogRef.close({ email: this.email });
   };
 }

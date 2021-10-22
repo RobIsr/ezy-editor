@@ -10,6 +10,7 @@ import { AuthService } from './services/auth.service';
 import { User } from './models/user';
 import { CommentDialogComponent } from './comment-dialog/comment-dialog.component';
 import * as uuid from 'uuid';
+import { EmailDialogComponent } from './components/email-dialog/email-dialog.component';
 
 @Component({
   selector: 'app-root',
@@ -33,6 +34,7 @@ export class AppComponent implements OnInit {
     private socketService: SocketService,
     public saveDialog: MatDialog,
     public commentDialog: MatDialog,
+    public emailDialog: MatDialog,
     private socket: Socket
   ){
     this.user = this.authService.getUser();
@@ -173,6 +175,26 @@ export class AppComponent implements OnInit {
     this.currentDoc = undefined;
     this.docService.notifyOther({
       new: true
+    });
+  }
+
+  sendEmail() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.id = "email-dialog";
+    dialogConfig.data = {
+      email: "",
+    }
+
+    const dialogRef = this.emailDialog.open(EmailDialogComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log("Email to send to: ", result.email);
+        this.docService.sendEmail(result.email, this.currentId);
+      }
     });
   }
 

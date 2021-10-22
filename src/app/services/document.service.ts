@@ -6,7 +6,7 @@ import { Doc } from '../models/doc';
 import {Apollo, QueryRef, gql} from 'apollo-angular';
 import { AuthService } from './auth.service';
 import { User } from '../models/user';
-import { Router } from '@angular/router';
+import { SocketService } from './socket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -63,8 +63,9 @@ export class DocumentService {
   constructor(
     private authService: AuthService,
     private http: HttpClient,
-    private router: Router,
-    private apollo: Apollo) {
+    private apollo: Apollo,
+    private socketService: SocketService,
+    ) {
       //Get authenticated user.
       this.user = this.authService.getUser();
 
@@ -98,6 +99,7 @@ export class DocumentService {
   allUsers = `${environment.apiUrl}/allUsers`;
   generatePdfUrl = `${environment.apiUrl}/generatePdf`;
   addCommentUrl = `${environment.apiUrl}/addComment`;
+  sendInviteUrl = `${environment.apiUrl}/sendInvite`;
 
   saveDocument(document:Doc) {
     this.notifyOther({loading: true});
@@ -140,6 +142,19 @@ export class DocumentService {
       var file = new Blob([data], {type: 'application/pdf'});
       var fileURL = URL.createObjectURL(file);
       window.open(fileURL);
+    });
+  }
+
+  sendEmail(email:string, docId:string) {
+    console.log("Sending email from service");
+    this.http.post(this.sendInviteUrl, {
+      "sender": this.user.username,
+      "email": email 
+    }).subscribe((res:any) => {
+      //Add the email adress to allowed users on success.
+      if (res.data.message === "Queued. Thank you.") {
+        this.socketService.addAllowedUser(this.user.username, docId, email);
+      }
     });
   }
 }

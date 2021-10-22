@@ -24,6 +24,7 @@ export class ToolbarComponent implements OnInit {
   @Output() saveEvent = new EventEmitter();
   @Output() newEvent = new EventEmitter();
   @Output() commentEvent = new EventEmitter();
+  @Output() emailEvent = new EventEmitter();
   faSave = faSave;
   faPlus = faPlus;
   faPdf = faFilePdf;
@@ -129,6 +130,7 @@ export class ToolbarComponent implements OnInit {
 
   onSendInvite() {
     console.log("Sending invite...");
+    this.emailEvent.emit();
   }
 
   onLogout() {
