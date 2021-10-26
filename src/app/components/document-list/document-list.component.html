@@ -6,7 +6,15 @@
     <ng-template #elseBlock>
         <div id="doc-list" class="doc-list" *ngFor='let document of docs'>
             <li (click)="onDocumentClick(document)" [ngClass]="selectedDocument === document._id ? 'doc-list-item marked' : 'doc-list-item'">
-                {{document.name}}
+                {{document.name}} 
+                <span *ngIf="document.type == 'code'" class="icon codeType">
+                    <fa-icon [icon]="faCode">
+                    </fa-icon>
+                </span>
+                <span *ngIf="document.type == 'text'" class="icon textType">
+                    <fa-icon [icon]="faFile">
+                    </fa-icon>
+                </span>
             </li>
         </div>
     </ng-template>

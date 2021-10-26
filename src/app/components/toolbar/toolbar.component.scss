@@ -44,7 +44,12 @@
 
 #email {
     position: absolute;
-    left: 180px;
+    left: 185px;
+}
+
+#code {
+    position: absolute;
+    left: 230px;
 }
 
 #code {
@@ -103,6 +108,14 @@
 .user-item:hover {
     background-color: #63b2d3;
     cursor: pointer;
+}
+
+.green {
+    color:green;
+}
+
+.grey {
+    color: grey;
 }
 
 #saved {

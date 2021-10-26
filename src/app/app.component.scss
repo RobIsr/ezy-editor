@@ -9,6 +9,31 @@
     width: 100%;
 }
 
+.hidden {
+    visibility: hidden;
+}
+
+.visible {
+    visibility: visible;
+}
+
+.faPlay {
+    color: green;
+    font-size: 30px;
+    margin-right: 0.5em;
+}
+
+.faPlay:hover {
+    cursor: pointer;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    padding: 0.5em;
+}
+
 @media screen and (max-width: 800px) {
     .app-container {
         flex-direction: column-reverse;

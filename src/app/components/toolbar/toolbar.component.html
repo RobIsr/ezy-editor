@@ -29,7 +29,7 @@
                     </span>
                 </ng-template>
 
-                <span id="comment" class="icon comment" *ngIf="isSelecting" (click)="onComment()">
+                <span id="comment" class="icon comment" *ngIf="isSelecting && !codeMode" (click)="onComment()">
                     <fa-icon [icon]="faComment">
                     </fa-icon>
                 </span>
@@ -41,6 +41,11 @@
 
                 <span *ngIf="displayPdf" id="email" class="icon email" (click)="onSendInvite()">
                     <fa-icon [icon]="faEnvelope">
+                    </fa-icon>
+                </span>
+
+                <span id="code" *ngIf="fileName == UNSAVED_MESSAGE" [className]="codeMode ? 'icon code green' : 'icon code grey'" (click)="onCodeSelected()">
+                    <fa-icon [icon]="faCode">
                     </fa-icon>
                 </span>
             </div>

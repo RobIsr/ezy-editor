@@ -7,7 +7,30 @@
       (newEvent)="newDocument()"
       (commentEvent)="addComment()"
       (emailEvent)="sendEmail()"
+      (codeSelectedEvent)="toggleCodeMode($event)"
       ></app-toolbar>
-    <textarea id="editor"></textarea>
+    <div *ngIf="codeMode">
+      <div class="button-container">
+        <span id="execute-code" class="icon faPlay" (click)="executeCode()">
+          <fa-icon [icon]="faRun">
+          </fa-icon>
+        </span>
+      </div>
+      <ngx-monaco-editor
+        [options]="{
+          theme: 'vs-dark',
+          language: 'javascript'
+        }"
+        [(ngModel)]="codeContent">
+      </ngx-monaco-editor>
+      <div id="code-result" class="result">
+        <div>Output>></div>
+        {{ codeResult }}
+      </div>
+    </div>
+    
+    <div [className]="codeMode ? 'hidden' : 'visible'">
+      <textarea id="editor"></textarea>
+    </div>
   </div>
 </div>

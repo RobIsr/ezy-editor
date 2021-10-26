@@ -64,7 +64,7 @@ export class DocumentService {
     private authService: AuthService,
     private http: HttpClient,
     private apollo: Apollo,
-    private socketService: SocketService,
+    //private socketService: SocketService,
     ) {
       //Get authenticated user.
       this.user = this.authService.getUser();
@@ -76,6 +76,7 @@ export class DocumentService {
             allDocuments(username: "${this.user.username}") {
               _id
               owner
+              type
               allowedUsers
               name
               html
@@ -100,17 +101,32 @@ export class DocumentService {
   generatePdfUrl = `${environment.apiUrl}/generatePdf`;
   addCommentUrl = `${environment.apiUrl}/addComment`;
   sendInviteUrl = `${environment.apiUrl}/sendInvite`;
+  execCodeUrl = "https://execjs.emilfolino.se/code";
 
   saveDocument(document:Doc) {
     this.notifyOther({loading: true});
     this.http.post(this.saveDocUrl, { 
       "name": document.name,
-      "html": document.html 
+      "html": document.html,
+      "type": document.type
     }).subscribe(data => {
       this.notifyOther({loading: false});
       this.notifyOther({refreshDocs: true});
       this.notifyOther({toolbarName: document.name});
-    })
+    });
+  }
+
+  saveCodeDocument(docName:string, code:string) {
+    this.notifyOther({loading: true});
+    this.http.post(this.saveDocUrl, { 
+      "name": docName,
+      "html": code,
+      "type": "code" 
+    }).subscribe(data => {
+      this.notifyOther({loading: false});
+      this.notifyOther({refreshDocs: true});
+      this.notifyOther({toolbarName: docName});
+    });
   }
 
   updateOneDocument(document:Doc, id:string) {
@@ -145,16 +161,23 @@ export class DocumentService {
     });
   }
 
-  sendEmail(email:string, docId:string) {
+  sendEmail(email:string) {
     console.log("Sending email from service");
-    this.http.post(this.sendInviteUrl, {
+    return this.http.post(this.sendInviteUrl, {
       "sender": this.user.username,
       "email": email 
+    });
+  }
+
+  executeCode(code:string) {
+    this.notifyOther({codeExecuting: true});
+    console.log("Executing code from service");
+    this.http.post(this.execCodeUrl, { 
+      "code": btoa(code)
     }).subscribe((res:any) => {
-      //Add the email adress to allowed users on success.
-      if (res.data.message === "Queued. Thank you.") {
-        this.socketService.addAllowedUser(this.user.username, docId, email);
-      }
+      console.log(atob(res.data));
+      this.notifyOther({codeResult: atob(res.data)});
+      this.notifyOther({codeExecuting: false});
     });
   }
 }

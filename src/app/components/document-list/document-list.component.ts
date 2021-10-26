@@ -3,6 +3,8 @@ import { Doc } from 'src/app/models/doc';
 import { User } from 'src/app/models/user';
 import { AuthService } from 'src/app/services/auth.service';
 import { DocumentService } from '../../services/document.service';
+import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCode } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-document-list',
@@ -13,8 +15,16 @@ export class DocumentListComponent implements OnInit {
   docs:any = [] // Array containing all documents.
   public currentId:string = "";
   selectedDocument:string = "";
+  currentDocument:Doc = {
+    _id: '',
+    name: '',
+    html: '',
+    type: ''
+  };
   loading:boolean = false;
   user:User;
+  faFile = faFileAlt;
+  faCode = faCode;
 
   constructor(
     private authService: AuthService,
@@ -56,6 +66,7 @@ export class DocumentListComponent implements OnInit {
     this.documentService.getAllUsers();
     // this.documentService.getAllowedUsers(doc._id, doc.owner as string);
     this.documentService.documentClicked(doc);
+    this.currentDocument = doc;
     this.selectedDocument = doc._id;
   }
 }
