@@ -27,10 +27,11 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              {"glob": "**/*", "input": "node_modules/monaco-editor", "output": "assets/monaco-editor"},
               {
-                "glob": "**/*",
-                "input": "node_modules/tinymce",
-                "output": "/tinymce/"
+              "glob": "**/*",
+              "input": "node_modules/tinymce",
+              "output": "/tinymce/"
               },
               "src/favicon.ico",
               "src/assets"

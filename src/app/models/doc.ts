@@ -3,5 +3,6 @@ export interface Doc {
     owner?: string,
     allowedUsers?: any
     name: string,
-    html: string
+    html: string,
+    type: string
 }

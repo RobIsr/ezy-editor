@@ -4,6 +4,7 @@ import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
+import { faCode } from '@fortawesome/free-solid-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { DocumentService } from '../../services/document.service';
 import { Socket } from 'ngx-socket-io';
@@ -25,12 +26,14 @@ export class ToolbarComponent implements OnInit {
   @Output() newEvent = new EventEmitter();
   @Output() commentEvent = new EventEmitter();
   @Output() emailEvent = new EventEmitter();
+  @Output() codeSelectedEvent = new EventEmitter();
   faSave = faSave;
   faPlus = faPlus;
   faPdf = faFilePdf;
   faSignout = faSignOutAlt;
   faComment = faComment;
   faEnvelope = faEnvelope;
+  faCode = faCode;
   fileName:string = this.UNSAVED_MESSAGE; //To be displayed in toolbar when document is open.
   typing = false;
   searchInput:string = "";
@@ -44,6 +47,7 @@ export class ToolbarComponent implements OnInit {
   isOwner:boolean = false;
   isSelecting:boolean = false;
   selectedText = "";
+  codeMode = false;
 
   constructor(
     private documentService: DocumentService,
@@ -131,6 +135,17 @@ export class ToolbarComponent implements OnInit {
   onSendInvite() {
     console.log("Sending invite...");
     this.emailEvent.emit();
+  }
+
+  onCodeSelected() {
+    console.log("Code mode activated...");
+    if (this.codeMode) {
+      this.codeMode = false;
+      this.codeSelectedEvent.emit(false);
+    } else {
+      this.codeMode = true;
+      this.codeSelectedEvent.emit(true);
+    }
   }
 
   onLogout() {

@@ -11,6 +11,7 @@ import { User } from './models/user';
 import { CommentDialogComponent } from './comment-dialog/comment-dialog.component';
 import * as uuid from 'uuid';
 import { EmailDialogComponent } from './components/email-dialog/email-dialog.component';
+import { faPlay } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,9 @@ import { EmailDialogComponent } from './components/email-dialog/email-dialog.com
 export class AppComponent implements OnInit {
   title = 'ezy-editor';
   editorContent:string = "";
+  codeContent = "";
+  codeMode = false;
+  codeResult = "";
   docs:Doc[] = [];
   currentId:string = "";
   currentDoc:Doc | undefined;
@@ -27,6 +31,8 @@ export class AppComponent implements OnInit {
   dialogRef= "";
   commentDialogRef = null as unknown as MatDialogRef<CommentDialogComponent, any>;
   user:User;
+  faRun = faPlay;
+  codeExecuting = false;
 
   constructor(
     private authService: AuthService,
@@ -48,6 +54,12 @@ export class AppComponent implements OnInit {
           this.docs = [];
           this.docs = res.allDocs;
       }
+      if (res.codeResult) {
+        this.codeResult = res.codeResult;
+      }
+      if (res.codeExecuting) {
+        this.codeExecuting = res.codeExecuting;
+      }
     });
 
     this.docService.documentClickedEvent.subscribe((res) => {
@@ -55,55 +67,35 @@ export class AppComponent implements OnInit {
       this.loadToEditor(this.currentId);
     })
 
-    // Listen to socket.
-    this.socket.on("message", (message:any) => {
-      this.editorContent = message;
-      // Set the editor content to that recieved from socket.
-      tinymce.activeEditor.setContent(this.editorContent);
-      // Set position of marker to end of content
-      tinymce.activeEditor.focus();
-      tinymce.activeEditor.selection.select(tinymce.activeEditor.getBody(), true);
-      tinymce.activeEditor.selection.collapse(false);
-    });
+    if (this.codeMode) {
+      // Listen to socket.
+      this.socket.on("message", (message:any) => {
+        this.codeContent = message;
+      });
+    } else {
+      // Listen to socket.
+      this.socket.on("message", (message:any) => {
+        this.editorContent = message;
+        // Set the editor content to that recieved from socket.
+        tinymce.activeEditor.setContent(this.editorContent);
+        // Set position of marker to end of content
+        tinymce.activeEditor.focus();
+        tinymce.activeEditor.selection.select(tinymce.activeEditor.getBody(), true);
+        tinymce.activeEditor.selection.collapse(false);
+      });
+    }
   }
 
   ngAfterViewInit() {
-    tinymce.init(
-      {
-          selector: "#editor",
-          base_url: './tinymce',
-          content_css : "./assets/content.css",
-          setup: (editor:any) => {
-            editor.on('KeyUp', () => {
-              this.editorContent = editor.getBody().innerHTML;
-              console.log(this.editorContent);
-              this.updateSocket(editor.getBody().innerHTML);
-            });
-            editor.on('SelectionChange', (e: any) => {
-              let selection = tinymce.activeEditor.selection.getContent();
-              this.docService.selectionChanged(selection);
-            });
-          },
-          suffix: '.min',
-          height: 500,
-          menubar: false,
-          plugins: [
-            'advlist autolink lists link image charmap print preview anchor',
-            'searchreplace visualblocks code fullscreen',
-            'insertdatetime media table paste code help wordcount'
-          ],
-          toolbar:
-            'undo redo | formatselect | bold italic backcolor | \
-            alignleft aligncenter alignright alignjustify | \
-            bullist numlist outdent indent | removeformat | help'
-      });
+    this.activateEditor();
   }
 
   saveDocument(fileName:any) {
     const document:Doc = {
       _id: "",
       name: fileName,
-      html: this.editorContent
+      html: this.codeMode ? this.codeContent : this.editorContent,
+      type: this.codeMode ? "code" : "text"
     }
     
     //Check to see if document needs to inserted or updated.
@@ -119,53 +111,27 @@ export class AppComponent implements OnInit {
     const doc = this.docs.find(doc => doc._id === id);
 
     this.currentDoc = doc;
+    console.log(this.currentDoc);
 
     this.currentId = id; //Store id for the document currently opened.
-    if (doc) {
+    if (doc && doc.type == "text") {
+      this.codeMode = false;
       tinymce.activeEditor.setContent(doc.html);
       this.editorContent = doc.html;
       this.docService.notifyOther({
         toolbarName: doc.name
       });
       console.log(this.currentDoc?.html);
-    }
-    this.socketService.createRoom(this.currentId);
-
-    let comments = tinymce.activeEditor.getBody().getElementsByClassName("highlight");
-    let commentItems = Array.from(comments);
-
-    commentItems.forEach((elem) => {
-      elem.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        console.log(elem);
-        const dialogConfig = new MatDialogConfig();
-
-        dialogConfig.disableClose = true;
-        dialogConfig.autoFocus = true;
-        dialogConfig.id = "comment-dialog1";
-        dialogConfig.data = {
-          comment: elem.attributes.getNamedItem("data-comment")?.value,
-          delete: true
-        }
-
-        this.commentDialogRef = this.commentDialog.open(CommentDialogComponent, dialogConfig);
-
-        this.commentDialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            if (result.delete) {
-              let cleanElem = document.createElement("span");
-
-              cleanElem.innerHTML = elem.innerHTML;
-              elem.replaceWith(cleanElem);
-              this.editorContent = tinymce.activeEditor.getContent();
-            } else {
-              this.handleComment(result, this.commentDialogRef);
-            }
-          }
-        });
+    } else if (doc && doc.type == "code") {
+      this.codeMode = true;
+      this.codeContent = doc.html;
+      this.docService.notifyOther({
+        toolbarName: doc.name
       });
-    });
+    }
+
+    this.socketService.createRoom(this.currentId);
+    this.initComments();
   }
 
   newDocument() {
@@ -193,7 +159,12 @@ export class AppComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         console.log("Email to send to: ", result.email);
-        this.docService.sendEmail(result.email, this.currentId);
+        this.docService.sendEmail(result.email).subscribe((res:any) => {
+          //Add the email adress to allowed users on success.
+          if (res.data.message === "Queued. Thank you.") {
+            this.socketService.addAllowedUser(this.user.username, this.currentId, result.email);
+          }
+        });;
       }
     });
   }
@@ -285,6 +256,10 @@ export class AppComponent implements OnInit {
     });
   }
 
+  toggleCodeMode(codeModeSelected:boolean) {
+    this.codeMode = codeModeSelected; 
+  }
+
   updateSocket(editorContent:any) {
     if(this.currentDoc) {
       this.socketService.sendMessage(
@@ -293,5 +268,79 @@ export class AppComponent implements OnInit {
         this.currentDoc?.name as string,
         this.editorContent);
     }
+  }
+
+  executeCode() {
+    this.docService.executeCode(this.codeContent);
+  }
+
+  activateEditor() {
+    tinymce.init(
+      {
+          selector: "#editor",
+          base_url: './tinymce',
+          content_css : "./assets/content.css",
+          setup: (editor:any) => {
+            editor.on('KeyUp', () => {
+              this.editorContent = editor.getBody().innerHTML;
+              console.log(this.editorContent);
+              this.updateSocket(editor.getBody().innerHTML);
+            });
+            editor.on('SelectionChange', (e: any) => {
+              let selection = tinymce.activeEditor.selection.getContent();
+              this.docService.selectionChanged(selection);
+            });
+          },
+          suffix: '.min',
+          height: 500,
+          menubar: false,
+          plugins: [
+            'advlist autolink lists link image charmap print preview anchor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media table paste code help wordcount'
+          ],
+          toolbar:
+            'undo redo | formatselect | bold italic backcolor | \
+            alignleft aligncenter alignright alignjustify | \
+            bullist numlist outdent indent | removeformat | help'
+      });
+  }
+
+  initComments() {
+    let comments = tinymce.activeEditor.getBody().getElementsByClassName("highlight");
+    let commentItems = Array.from(comments);
+
+    commentItems.forEach((elem) => {
+      elem.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log(elem);
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
+        dialogConfig.id = "comment-dialog1";
+        dialogConfig.data = {
+          comment: elem.attributes.getNamedItem("data-comment")?.value,
+          delete: true
+        }
+
+        this.commentDialogRef = this.commentDialog.open(CommentDialogComponent, dialogConfig);
+
+        this.commentDialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            if (result.delete) {
+              let cleanElem = document.createElement("span");
+
+              cleanElem.innerHTML = elem.innerHTML;
+              elem.replaceWith(cleanElem);
+              this.editorContent = tinymce.activeEditor.getContent();
+            } else {
+              this.handleComment(result, this.commentDialogRef);
+            }
+          }
+        });
+      });
+    });
   }
 }

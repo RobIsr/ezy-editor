@@ -5,6 +5,7 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 
 const config: SocketIoConfig = { url: environment.apiUrl, options: {} };
 
@@ -61,6 +62,7 @@ import { EmailDialogComponent } from './components/email-dialog/email-dialog.com
     AppRoutingModule,
     ReactiveFormsModule,
     GraphQLModule,
+    MonacoEditorModule.forRoot() // use forRoot() in main app module only.
   ],
   providers: [
     { 

@@ -31,6 +31,8 @@
     "graphql": "^15.0.0",
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.1",
+    "monaco-editor": "^0.24.0",
+    "ngx-monaco-editor": "^12.0.0",
     "ngx-socket-io": "^4.1.0",
     "rxjs": "~6.6.0",
     "tinymce": "^5.9.1",
