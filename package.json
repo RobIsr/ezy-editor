@@ -5,7 +5,7 @@
     "start": "ng serve && electron .",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "protractor protractor_conf.js",
+    "test": "ng test",
     "deploy": "ng build --base-href './' && rsync -av --delete dist/ezy-editor/ rois20@ssh.student.bth.se:www/editor"
   },
   "private": true,
