@@ -4,25 +4,25 @@
             <legend>Register</legend>
             <div class="form-field">
                 <label>Email:</label>
-                <input id="register-email" name="email" formControlName="email">
+                <input id="register-email" formControlName="email">
             </div>
             <div class="form-field">
                 <label>Password:</label>
-                <input id="register-password" name="password" formControlName="password" 
+                <input id="register-password" formControlName="password" 
                        type="password">
             </div>
         </fieldset>
         <div class="form-buttons">
-            <button id="register-btn" class="button button-primary" 
+            <button type="button" id="register-btn" class="button button-primary" 
                     (click)="register()">Register</button>
         </div>
         <div class="link">
             <a routerLink="/login" routerLinkActive="active">Login</a>
         </div>
-        <div class="auth-message-error" *ngIf="error">
+        <div id="error" class="auth-message-error" *ngIf="error">
             <p>{{error}}</p>
         </div>
-        <div class="auth-message-success" *ngIf="success">
+        <div id="success" class="auth-message-success" *ngIf="success">
             <p>{{success}}</p>
         </div>
 

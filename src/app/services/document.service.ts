@@ -170,14 +170,12 @@ export class DocumentService {
   }
 
   executeCode(code:string) {
-    this.notifyOther({codeExecuting: true});
     console.log("Executing code from service");
     this.http.post(this.execCodeUrl, { 
       "code": btoa(code)
     }).subscribe((res:any) => {
       console.log(atob(res.data));
       this.notifyOther({codeResult: atob(res.data)});
-      this.notifyOther({codeExecuting: false});
     });
   }
 }

@@ -11,6 +11,8 @@ import { AuthService } from 'src/app/services/auth.service';
 export class LoginComponent {
     form:FormGroup;
     error:string = "";
+    email:string = "";
+    password:string = "";
 
     constructor(
       private fb:FormBuilder, 
@@ -22,25 +24,31 @@ export class LoginComponent {
           email: ['',Validators.required],
           password: ['',Validators.required]
       });
+
+      this.form.get("email")?.valueChanges.subscribe(emailValue => {
+          this.email = emailValue;
+        });
+
+      this.form.get("password")?.valueChanges.subscribe(passwordValue => {
+             this.password = passwordValue;
+        });
     }
 
     login() {
-        const val = this.form.value;
-
         this.error = "";
-
-        if (val.email && val.password) {
-          this.error = "";
-            this.authService.login(val.email, val.password).subscribe((res) => {
-              localStorage.setItem('JWT_TOKEN', JSON.stringify(res));
-                this.router.navigate(['/'])
-                .then(() => {
-                    window.location.reload();
-                });
-            },
-            (error) => {
-                this.error = error.error.data;
-            });
-        }
+        if (this.email != "" && this.password != "") {
+          this.authService.login(this.email, this.password).subscribe((res) => {
+            localStorage.setItem('JWT_TOKEN', JSON.stringify(res));
+              this.router.navigate(['/'])
+              .then(() => {
+                  window.location.reload();
+              });
+          },
+          (error) => {
+              this.error = error.error.data;
+          });
+      } else {
+        this.error = "Please provide both email and password."
+      }
     }
 }
